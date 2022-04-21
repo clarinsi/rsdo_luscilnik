@@ -1,0 +1,607 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [{
+        "url": "http://localhost:8089",
+        "description": "Generated server url"
+    }],
+    "paths": {
+        "/oznaciBesedilo": {
+            "post": {
+                "tags": ["marktext"],
+                "summary": "Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "operationId": "getText",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/izlusci": {
+            "post": {
+                "tags": ["extract"],
+                "summary": "Izlusci terminološke kandidate iz seznama besedil v conllu obliki",
+                "operationId": "getCandidates",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "conllus": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "prepovedaneBesede": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TerminoloskiKandidat"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/datotekaVBesedilo/ocr": {
+            "post": {
+                "tags": ["doc-2text"],
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo s pomočjo ocr razpoznavanja",
+                "operationId": "getTextOcr",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": ["file"],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/datotekaVBesedilo/": {
+            "post": {
+                "tags": ["doc-2text"],
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": ["file"],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/steviloBesedilPoIskanju": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne število besedil glede na iskalne pogoje",
+                "operationId": "getNumberTexts",
+                "parameters": [{
+                    "name": "leta",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }, {
+                    "name": "vrste",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "kljucnebesede",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "cerifpodrocja",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/izlusciPoIskanju": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne terminloške kandidate glede na ",
+                "operationId": "getExtractedWords",
+                "parameters": [{
+                    "name": "leta",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }, {
+                    "name": "vrste",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "kljucnebesede",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "cerifpodrocja",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TerminoloskiKandidat"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/datotekePoIskanju": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje",
+                "operationId": "getFiles",
+                "parameters": [{
+                    "name": "leta",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }, {
+                    "name": "vrste",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "kljucnebesede",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "cerifpodrocja",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "byte"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/datotekaPoId": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne binarni zapis v originalnem formatu po id-ju datoteke",
+                "operationId": "getFile",
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "byte"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/conlluPoIskanju": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne seznam CoNNL-U-jev glede na iskalne pogoje",
+                "operationId": "getConllus",
+                "parameters": [{
+                    "name": "leta",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }, {
+                    "name": "vrste",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "kljucnebesede",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "cerifpodrocja",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/conlluPoId": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne CoNNL-U po id-ju datoteke",
+                "operationId": "getConllu",
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/besediloPoId": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne besedilo po id-ju datoteke",
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/besedilaPoIskanju": {
+            "get": {
+                "tags": ["oss"],
+                "summary": "Vrne seznam besedil glede na iskalne pogoje",
+                "operationId": "getTexts",
+                "parameters": [{
+                    "name": "leta",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }, {
+                    "name": "vrste",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "kljucnebesede",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }, {
+                    "name": "cerifpodrocja",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TerminoloskiKandidat": {
+                "type": "object",
+                "properties": {
+                    "kandidat": {
+                        "type": "string"
+                    },
+                    "kanonicnaoblika": {
+                        "type": "string"
+                    },
+                    "POSoznake": {
+                        "type": "string"
+                    },
+                    "nosilnautez": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "podporneutezi": {
+                        "type": "array",
+                        "items": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    "pogostostpojavljanja": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
