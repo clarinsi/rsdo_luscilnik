@@ -1,0 +1,515 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8089
+  description: Generated server url
+paths:
+  /oznaciBesedilo:
+    post:
+      tags:
+      - marktext
+      summary: Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne
+        conll-u format
+      operationId: get_text
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_controller
+  /izlusci:
+    post:
+      tags:
+      - extract
+      summary: Izlusci terminološke kandidate iz seznama besedil v conllu obliki
+      operationId: get_candidates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/izlusci_body'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TerminoloskiKandidat'
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.extract_controller
+  /datotekaVBesedilo/ocr:
+    post:
+      tags:
+      - doc-2text
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo\
+        \ s pomočjo ocr razpoznavanja"
+      operationId: get_text_ocr
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesedilo_ocr_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+  /datotekaVBesedilo/:
+    post:
+      tags:
+      - doc-2text
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo"
+      operationId: datoteka_v_besedilo_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesedilo_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+  /oss/steviloBesedilPoIskanju:
+    get:
+      tags:
+      - oss
+      summary: Vrne število besedil glede na iskalne pogoje
+      operationId: get_number_texts
+      parameters:
+      - name: leta
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: kljucnebesede
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: cerifpodrocja
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/izlusciPoIskanju:
+    get:
+      tags:
+      - oss
+      summary: 'Vrne terminloške kandidate glede na '
+      operationId: get_extracted_words
+      parameters:
+      - name: leta
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: kljucnebesede
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: cerifpodrocja
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TerminoloskiKandidat'
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/datotekePoIskanju:
+    get:
+      tags:
+      - oss
+      summary: Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne
+        pogoje
+      operationId: get_files
+      parameters:
+      - name: leta
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: kljucnebesede
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: cerifpodrocja
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: string
+                    format: byte
+                x-content-type: application/octet-stream
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/datotekaPoId:
+    get:
+      tags:
+      - oss
+      summary: Vrne binarni zapis v originalnem formatu po id-ju datoteke
+      operationId: get_file
+      parameters:
+      - name: id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+                x-content-type: application/octet-stream
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/conlluPoIskanju:
+    get:
+      tags:
+      - oss
+      summary: Vrne seznam CoNNL-U-jev glede na iskalne pogoje
+      operationId: get_conllus
+      parameters:
+      - name: leta
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: kljucnebesede
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: cerifpodrocja
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/conlluPoId:
+    get:
+      tags:
+      - oss
+      summary: Vrne CoNNL-U po id-ju datoteke
+      operationId: get_conllu
+      parameters:
+      - name: id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/besediloPoId:
+    get:
+      tags:
+      - oss
+      summary: Vrne besedilo po id-ju datoteke
+      operationId: oss_besedilo_po_id_get
+      parameters:
+      - name: id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/besedilaPoIskanju:
+    get:
+      tags:
+      - oss
+      summary: Vrne seznam besedil glede na iskalne pogoje
+      operationId: get_texts
+      parameters:
+      - name: leta
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: kljucnebesede
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: cerifpodrocja
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+components:
+  schemas:
+    TerminoloskiKandidat:
+      type: object
+      properties:
+        kandidat:
+          type: string
+        kanonicnaoblika:
+          type: string
+        POSoznake:
+          type: string
+        nosilnautez:
+          type: number
+          format: float
+        podporneutezi:
+          type: array
+          items:
+            type: number
+            format: float
+        pogostostpojavljanja:
+          type: array
+          items:
+            type: integer
+            format: int64
+      example:
+        podporneutezi:
+        - 6.0274563
+        - 6.0274563
+        pogostostpojavljanja:
+        - 1
+        - 1
+        POSoznake: POSoznake
+        kanonicnaoblika: kanonicnaoblika
+        nosilnautez: 0.8008282
+        kandidat: kandidat
+    izlusci_body:
+      type: object
+      properties:
+        conllus:
+          type: array
+          items:
+            type: string
+        prepovedaneBesede:
+          type: array
+          items:
+            type: string
+    datotekaVBesedilo_ocr_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVBesedilo_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+
