@@ -17,7 +17,7 @@ class TestOssController(BaseTestCase):
 
         Vrne CoNNL-U po id-ju datoteke
         """
-        query_string = [('id', 789)]
+        query_string = [('file_id', 789)]
         response = self.client.open(
             '/oss/conlluPoId',
             method='GET',
@@ -62,7 +62,7 @@ class TestOssController(BaseTestCase):
 
         Vrne binarni zapis v originalnem formatu po id-ju datoteke
         """
-        query_string = [('id', 789)]
+        query_string = [('file_id', 789)]
         response = self.client.open(
             '/oss/datotekaPoId',
             method='GET',
@@ -123,7 +123,7 @@ class TestOssController(BaseTestCase):
 
         Vrne besedilo po id-ju datoteke
         """
-        query_string = [('id', 789)]
+        query_string = [('file_id', 789)]
         response = self.client.open(
             '/oss/besediloPoId',
             method='GET',

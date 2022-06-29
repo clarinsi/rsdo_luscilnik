@@ -270,7 +270,7 @@ paths:
       summary: Vrne binarni zapis v originalnem formatu po id-ju datoteke
       operationId: get_file
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form
@@ -353,7 +353,7 @@ paths:
       summary: Vrne CoNNL-U po id-ju datoteke
       operationId: get_conllu
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form
@@ -377,7 +377,7 @@ paths:
       summary: Vrne besedilo po id-ju datoteke
       operationId: oss_besedilo_po_id_get
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form

@@ -5,13 +5,13 @@ from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat  # 
 from swagger_server import util
 
 
-def get_conllu(id):  # noqa: E501
+def get_conllu(file_id):  # noqa: E501
     """Vrne CoNNL-U po id-ju datoteke
 
      # noqa: E501
 
-    :param id: 
-    :type id: int
+    :param file_id:
+    :type file_id: int
 
     :rtype: str
     """
@@ -56,13 +56,13 @@ def get_extracted_words(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E50
     return 'do some magic!'
 
 
-def get_file(id):  # noqa: E501
+def get_file(file_id):  # noqa: E501
     """Vrne binarni zapis v originalnem formatu po id-ju datoteke
 
      # noqa: E501
 
-    :param id: 
-    :type id: int
+    :param file_id:
+    :type file_id: int
 
     :rtype: List[bytearray]
     """
@@ -126,13 +126,13 @@ def get_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     return 'do some magic!'
 
 
-def oss_besedilo_po_id_get(id):  # noqa: E501
+def oss_besedilo_po_id_get(file_id):  # noqa: E501
     """Vrne besedilo po id-ju datoteke
 
      # noqa: E501
 
-    :param id: 
-    :type id: int
+    :param file_id:
+    :type file_id: int
 
     :rtype: str
     """

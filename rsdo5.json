@@ -356,7 +356,7 @@
                 "summary": "Vrne binarni zapis v originalnem formatu po id-ju datoteke",
                 "operationId": "getFile",
                 "parameters": [{
-                    "name": "id",
+                    "name": "file_id",
                     "in": "query",
                     "required": true,
                     "schema": {
@@ -453,7 +453,7 @@
                 "summary": "Vrne CoNNL-U po id-ju datoteke",
                 "operationId": "getConllu",
                 "parameters": [{
-                    "name": "id",
+                    "name": "file_id",
                     "in": "query",
                     "required": true,
                     "schema": {
@@ -480,7 +480,7 @@
                 "tags": ["oss"],
                 "summary": "Vrne besedilo po id-ju datoteke",
                 "parameters": [{
-                    "name": "id",
+                    "name": "file_id",
                     "in": "query",
                     "required": true,
                     "schema": {
