@@ -65,3 +65,6 @@ target/
 
 # JetBrains
 .idea
+
+# Related to Development folder
+mnt/
