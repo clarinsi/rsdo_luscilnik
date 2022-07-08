@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
+from swagger_server.models.oznaci_besedilo_body import OznaciBesediloBody  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
@@ -16,7 +17,7 @@ class TestMarktextController(BaseTestCase):
 
         Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format
         """
-        body = 'body_example'
+        body = OznaciBesediloBody()
         response = self.client.open(
             '/oznaciBesedilo',
             method='POST',

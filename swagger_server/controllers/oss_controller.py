@@ -1,8 +1,11 @@
 import connexion
 import six
+import os
 
 from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat  # noqa: E501
 from swagger_server import util
+from flask import send_file
+from swagger_server.db_utils import Ngrams_Manager
 
 
 def get_conllu(file_id):  # noqa: E501
@@ -15,7 +18,17 @@ def get_conllu(file_id):  # noqa: E501
 
     :rtype: str
     """
-    return 'do some magic!'
+    file_path = util.get_conllu_path_by_id(file_id)
+
+    a = Ngrams_Manager.get_by_file_id(file_id)
+    print(a)
+
+    try:
+        return send_file(file_path, attachment_filename=f'{file_id}.conllu', as_attachment=True)
+    except Exception as e:
+        if "The system cannot find the file specified" in str(e):
+            return "The conllu with this ID doesn't exist.", 404
+        return str(e), 400
 
 
 def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
