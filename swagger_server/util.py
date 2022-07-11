@@ -144,3 +144,7 @@ def _deserialize_dict(data, boxed_type):
 
 def get_conllu_path_by_id(file_id):
     return f'..\\mnt\\ssd\\ds_ftp\\classla_OS2022\\conll\\rsdo_doc-{file_id}.plainText.conllu'
+
+
+def get_original_file_by_id(file_id):
+    return f'..\\mnt\\ssd\\ds_ftp\\classla_OS2022\\conll\\rsdo_doc-{file_id}.xml'

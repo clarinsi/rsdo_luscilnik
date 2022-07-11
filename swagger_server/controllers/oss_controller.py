@@ -18,17 +18,10 @@ def get_conllu(file_id):  # noqa: E501
 
     :rtype: str
     """
-    file_path = util.get_conllu_path_by_id(file_id)
-
-    a = Ngrams_Manager.get_by_file_id(file_id)
-    print(a)
-
     try:
-        return send_file(file_path, attachment_filename=f'{file_id}.conllu', as_attachment=True)
-    except Exception as e:
-        if "The system cannot find the file specified" in str(e):
-            return "The conllu with this ID doesn't exist.", 404
-        return str(e), 400
+        return send_file(util.get_conllu_path_by_id(file_id), attachment_filename=f'{file_id}.conllu')
+    except FileNotFoundError as e:
+        return "The conllu with this ID doesn't exist.", 404
 
 
 def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
@@ -149,4 +142,7 @@ def oss_besedilo_po_id_get(file_id):  # noqa: E501
 
     :rtype: str
     """
-    return 'do some magic!'
+    try:
+        return send_file(util.get_original_file_by_id(file_id), attachment_filename=f'{file_id}.conllu')
+    except FileNotFoundError as e:
+        return "The conllu with this ID doesn't exist.", 404
