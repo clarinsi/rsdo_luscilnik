@@ -68,3 +68,6 @@ target/
 
 # Related to Development folder
 mnt/
+
+gen/
+swagger_server/requets_db/dbs/*

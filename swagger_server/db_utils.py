@@ -4,11 +4,20 @@ import sys
 
 # todo: DO NOT PUSH THIS TO GIT
 database_info = {
-    'database': 'TEMPORARYVALJUSTFORTHECOMMITPURPOSE',
-    'host': 'TEMPORARYVALJUSTFORTHECOMMITPURPOSE',
-    'port': 'TEMPORARYVALJUSTFORTHECOMMITPURPOSE',
-    'user': 'TEMPORARYVALJUSTFORTHECOMMITPURPOSE',
-    'password': 'TEMPORARYVALJUSTFORTHECOMMITPURPOSE'
+    'database': 'conllus_150k',
+    'host': '164.8.252.72',
+    'port': 3306,
+    'user': 'kiki',
+    'password': 'kiki123'
+}
+
+# PUT THIS IN INSTEAD WHEN COMMITING, THIS IS ONLY TEMPORARY UNTIL AN .env FILE IS ADDED
+database_info_tmp = {
+    'database': '...',
+    'host': '...',
+    'port': 0000,
+    'user': '...',
+    'password': '...'
 }
 
 # Connect to MariaDB Platform

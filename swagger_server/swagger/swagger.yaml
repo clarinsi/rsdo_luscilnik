@@ -6,6 +6,38 @@ servers:
 - url: http://localhost:8089
   description: Generated server url
 paths:
+  /job/{job_id}:
+    get:
+      tags:
+      - jobs
+      summary: Vrne status
+      operationId: get_job_status
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: show_estimated_completion
+        in: query
+        description: Calculate estimate time remaining based on various factors (could
+          be inaccurate)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+      x-openapi-router-controller: swagger_server.controllers.jobs_controller
   /oznaciBesedilo:
     post:
       tags:
@@ -485,6 +517,26 @@ components:
         kanonicnaoblika: kanonicnaoblika
         nosilnautez: 0.8008282
         kandidat: kandidat
+    JobResponse:
+      required:
+      - finished_job
+      type: object
+      properties:
+        finished_job:
+          type: boolean
+        completed_at:
+          type: string
+          format: date-time
+        estimated_completion:
+          type: string
+          format: date-time
+        job_result:
+          type: string
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        estimated_completion: 2000-01-23T04:56:07.000+00:00
+        job_result: job_result
+        finished_job: true
     oznaciBesedilo_body:
       type: object
       properties:

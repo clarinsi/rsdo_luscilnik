@@ -11,6 +11,46 @@
         }
     ],
     "paths": {
+        "/job/{job_id}": {
+            "get": {
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Vrne status",
+                "operationId": "getJobStatus",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "show_estimated_completion",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Calculate estimate time remaining based on various factors (could be inaccurate)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/oznaciBesedilo": {
             "post": {
                 "tags": [
@@ -667,6 +707,28 @@
                         }
                     }
                 }
+            },
+            "JobResponse": {
+                "type": "object",
+                "properties": {
+                    "finished_job": {
+                        "type": "boolean"
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "estimated_completion": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "job_result": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "finished_job"
+                ]
             }
         }
     }
