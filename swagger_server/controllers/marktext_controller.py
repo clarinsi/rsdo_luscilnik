@@ -24,6 +24,6 @@ def get_text(body):  # noqa: E501
     job, is_old_job = JobManager.create_job(1, body.besedilo)
     if job is None:
         return "Something went wrong", 500
-    ret = {'check_job_url': f'{connexion.request.url_root}?job_id={job.id}'}
+    ret = {'check_job_url': f'{connexion.request.url_root}/job/{job.id}'}
 
     return ret  # Todo: Update swagger to the newest response template later
