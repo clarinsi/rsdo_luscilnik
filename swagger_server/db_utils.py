@@ -4,11 +4,11 @@ import sys
 
 # todo: DO NOT PUSH THIS TO GIT
 database_info = {
-    'database': 'conllus_150k',
-    'host': '164.8.252.72',
-    'port': 3306,
-    'user': 'kiki',
-    'password': 'kiki123'
+    'database': '...',
+    'host': '...',
+    'port': 0000,
+    'user': '...',
+    'password': '...'
 }
 
 # PUT THIS IN INSTEAD WHEN COMMITING, THIS IS ONLY TEMPORARY UNTIL AN .env FILE IS ADDED
