@@ -132,7 +132,7 @@ def get_conllu(file_id):  # noqa: E501
     :rtype: str
     """
     try:
-        return send_file(util.get_conllu_file_path_by_id(file_id), attachment_filename=f'{file_id}.conllu')
+        return send_file(util.get_conllu_file_path_by_id(file_id), download_name=f'{file_id}.conllu')
     except FileNotFoundError as e:
         return "The conllu with this ID doesn't exist.", 404
 
@@ -148,7 +148,7 @@ def get_file(file_id):  # noqa: E501
     :rtype: List[bytearray]
     """
     try:
-        return send_file(util.get_original_file_path_by_id(file_id), attachment_filename=f'{file_id}.xml')
+        return send_file(util.get_original_file_path_by_id(file_id), download_name=f'{file_id}.xml')
     except FileNotFoundError as e:
         return "The file with this ID doesn't exist.", 404
 
@@ -164,6 +164,6 @@ def oss_besedilo_po_id_get(file_id):  # noqa: E501
     :rtype: str
     """
     try:
-        return send_file(util.get_original_file_path_by_id(file_id), attachment_filename=f'{file_id}.xml')
+        return send_file(util.get_original_file_path_by_id(file_id), download_name=f'{file_id}.xml')
     except FileNotFoundError as e:
         return "The file with this ID doesn't exist.", 404

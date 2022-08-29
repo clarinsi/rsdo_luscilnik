@@ -175,8 +175,10 @@ def get_files_by_keywords(kljucnebesede):
     kljucnebesede = [k.lower() for k in kljucnebesede]
     # Temporary solution until connection with mariadb is fixed
     ngrams_path = "classla_OS2022/ngrams/" if is_docker() else "../mnt/ssd/ds_ftp/classla_OS2022/ngrams/"
+    print("Looping trough ngrams")
     for path, dirs, files, in os.walk(ngrams_path):
-        for _file in files:
+        for i, _file in enumerate(files):
+            if i % 200 == 0: print(f"{i}/{len(files)}")
             file = f'{ngrams_path}{_file}'
             data = pd.read_csv(file, sep='\t')
             amount = len(data[data['ngram_len'] == 1 & data['gram_text'].str.lower().isin(kljucnebesede)])
