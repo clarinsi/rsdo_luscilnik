@@ -71,3 +71,5 @@ mnt/
 
 gen/
 swagger_server/requets_db/dbs/*
+
+.env

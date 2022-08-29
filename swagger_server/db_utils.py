@@ -1,24 +1,16 @@
 import mariadb
 import sys
+from decouple import config
 
 
-# todo: DO NOT PUSH THIS TO GIT
 database_info = {
-    'database': '...',
-    'host': '...',
-    'port': 0000,
-    'user': '...',
-    'password': '...'
+    'database': config('MDB_DATABASE'),
+    'host': config('MDB_HOST'),
+    'port': config('MDB_PORT', cast=int),
+    'user': config('MDB_USER'),
+    'password': config('MDB_PASSWORD')
 }
 
-# PUT THIS IN INSTEAD WHEN COMMITING, THIS IS ONLY TEMPORARY UNTIL AN .env FILE IS ADDED
-database_info_tmp = {
-    'database': '...',
-    'host': '...',
-    'port': 0000,
-    'user': '...',
-    'password': '...'
-}
 
 # Connect to MariaDB Platform
 try:
