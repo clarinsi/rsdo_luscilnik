@@ -164,6 +164,8 @@ def oss_besedilo_po_id_get(file_id):  # noqa: E501
     :rtype: str
     """
     try:
+        f = util.get_original_file_path_by_id(file_id)
+        print(f) # for debugging purposes on the server, delete this later
         return send_file(util.get_original_file_path_by_id(file_id), download_name=f'{file_id}.xml')
     except FileNotFoundError as e:
         return "The file with this ID doesn't exist.", 404
