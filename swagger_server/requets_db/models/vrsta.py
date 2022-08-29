@@ -2,8 +2,8 @@ from peewee import *
 from datetime import datetime
 import os
 
-if not os.path.exists('dbs'):
-    os.mkdir('dbs')
+if not os.path.exists('requets_db/dbs'):
+    os.mkdir('requets_db/dbs')
 
 DB = 'requets_db/dbs/jobs.db'
 db = SqliteDatabase(DB, pragmas={
