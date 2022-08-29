@@ -3,13 +3,17 @@ from datetime import datetime
 import os
 
 if not os.path.exists('requets_db/dbs'):
-    os.mkdir('requets_db/dbs')
+    print("---!--- requests_db/dbs doesn't exist")
+    print("lsing .")
+    print(os.listdir('.'))
+    os.mkdir('./requets_db/dbs')
 
 DB = 'requets_db/dbs/jobs.db'
 db = SqliteDatabase(DB, pragmas={
     # 'journal_mode': 'wal',
     'cache_size': -1 * 128 * 1024,  # 128MB
-    'foreign_keys': 1})
+    'foreign_keys': 1
+})
 
 
 class BaseModel(Model):
