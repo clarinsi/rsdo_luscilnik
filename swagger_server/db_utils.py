@@ -11,20 +11,17 @@ database_info = {
     'password': config('MDB_PASSWORD')
 }
 
-print("connecting to mariadb")
+cur = None
 
 # Connect to MariaDB Platform
 try:
     conn = mariadb.connect(**database_info)
+    # Get cursor
+    cur = conn.cursor()
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
-    sys.exit(1)
+    # sys.exit(1)
 
-print("connected to mariadb")
-
-
-# Get Cursor
-cur = conn.cursor()
 
 # class BaseModel(Model):
 #     class Meta:
