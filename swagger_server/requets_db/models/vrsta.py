@@ -2,13 +2,18 @@ from peewee import *
 from datetime import datetime
 import os
 
-if not os.path.exists('requets_db/dbs'):
-    print("---!--- requests_db/dbs doesn't exist")
-    print("lsing .")
-    print(os.listdir('.'))
-    os.mkdir('./requets_db/dbs')
+LOCAL_PATH = "requets_db/dbs"
+SERVER_PATH = "swagger_server/requets_db/dbs"
 
-DB = 'requets_db/dbs/jobs.db'
+if not os.path.exists(LOCAL_PATH):
+    if os.path.exists('requets_db'):
+        os.makedirs(LOCAL_PATH, exist_ok=True)
+    elif os.path.exists('swagger_server/requets_db'):
+        os.makedirs(SERVER_PATH, exist_ok=True)
+
+DB = f'{LOCAL_PATH}/jobs.db'
+if not os.path.exists(LOCAL_PATH):
+    DB = f'{SERVER_PATH}/jobs.db'
 db = SqliteDatabase(DB, pragmas={
     # 'journal_mode': 'wal',
     'cache_size': -1 * 128 * 1024,  # 128MB
