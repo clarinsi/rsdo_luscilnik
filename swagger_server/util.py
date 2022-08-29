@@ -152,21 +152,21 @@ def is_docker() -> bool:
 def get_conllu_file_path_by_id(file_id):
     r = f'classla_OS2022/conll/rsdo_doc-{file_id}.plainText.conllu'
     if is_docker():
-        return r
+        return f'/usr/src/app/{r}'
     return f'../mnt/ssd/ds_ftp/{r}'
 
 
 def get_original_file_path_by_id(file_id):
     r = f'classla_OS2022/besedila/rsdo_doc-{file_id}.xml'
     if is_docker():
-        return r
+        return f'/usr/src/app/{r}'
     return f'../mnt/ssd/ds_ftp/{r}'
 
 
 def get_tei_file_path_by_id(file_id):
     r = f'classla_OS2022/tei/rsdo_doc-{file_id}.plainText.tei.xml'
     if is_docker():
-        return r
+        return f'/usr/src/app/{r}'
     return f'../mnt/ssd/ds_ftp/{r}'
 
 
