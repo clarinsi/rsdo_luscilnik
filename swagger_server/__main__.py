@@ -16,5 +16,8 @@ def main():
     app.run(port=8080)
 
 
-if __name__ == '__main__':
-    main()
+# need to comment out the bottom part and add this because
+# for some reason it won't run otherwise on the docker on the server
+main()
+# if __name__ == '__main__':
+#    main()
