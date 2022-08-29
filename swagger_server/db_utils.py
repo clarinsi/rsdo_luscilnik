@@ -11,6 +11,7 @@ database_info = {
     'password': config('MDB_PASSWORD')
 }
 
+print("connecting to mariadb")
 
 # Connect to MariaDB Platform
 try:
@@ -18,6 +19,9 @@ try:
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
+
+print("connected to mariadb")
+
 
 # Get Cursor
 cur = conn.cursor()
