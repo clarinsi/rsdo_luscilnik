@@ -4,6 +4,7 @@ import connexion
 
 from swagger_server import encoder
 
+print("We in main file")
 
 def main():
     print("Starting app1")
@@ -16,8 +17,6 @@ def main():
     app.run(port=8080)
 
 
-# need to comment out the bottom part and add this because
-# for some reason it won't run otherwise on the docker on the server
-main()
-# if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    print("Starting main function")
+    main()
