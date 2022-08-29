@@ -3,3 +3,6 @@ connexion[swagger-ui] >= 2.6.0
 python_dateutil == 2.6.0
 setuptools >= 21.0.0
 swagger-ui-bundle >= 0.0.2
+peewee==3.15.0
+mariadb==1.1.3
+classla==1.1.0
