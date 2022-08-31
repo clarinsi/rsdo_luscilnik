@@ -15,4 +15,4 @@ services:
         image: apache/tika
         restart: always
         ports:
-            - 9999:9999
+            - 9998:9998

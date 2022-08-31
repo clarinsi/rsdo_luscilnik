@@ -13,6 +13,7 @@ from PyPDF2 import PdfReader
 from swagger_server.classla import cl_utils
 
 tika_server = "http://tika:9998/tika"
+tika_server = "http://localhost:9998/tika"
 
 # endpoint below to be used only for development purposes (don't need to run docker)
 # tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
