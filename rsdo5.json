@@ -179,7 +179,7 @@
                 "tags": [
                     "doc-2text"
                 ],
-                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo",
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {

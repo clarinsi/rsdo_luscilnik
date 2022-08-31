@@ -3,33 +3,33 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:8089
-  description: Generated server url
+  - url: http://localhost:8089
+    description: Generated server url
 paths:
   /job/{job_id}:
     get:
       tags:
-      - jobs
+        - jobs
       summary: Vrne status
       operationId: get_job_status
       parameters:
-      - name: job_id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
-      - name: show_estimated_completion
-        in: query
-        description: Calculate estimate time remaining based on various factors (could
-          be inaccurate)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: boolean
+        - name: job_id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
+        - name: show_estimated_completion
+          in: query
+          description: Calculate estimate time remaining based on various factors (could
+            be inaccurate)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -41,7 +41,7 @@ paths:
   /oznaciBesedilo:
     post:
       tags:
-      - marktext
+        - marktext
       summary: Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne
         conll-u format
       operationId: get_text
@@ -63,7 +63,7 @@ paths:
   /izlusci:
     post:
       tags:
-      - extract
+        - extract
       summary: Izlusci terminološke kandidate iz seznama besedil v conllu obliki
       operationId: get_candidates
       requestBody:
@@ -86,7 +86,7 @@ paths:
   /datotekaVBesedilo/ocr:
     post:
       tags:
-      - doc-2text
+        - doc-2text
       summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo\
         \ s pomočjo ocr razpoznavanja"
       operationId: get_text_ocr
@@ -107,7 +107,7 @@ paths:
   /datotekaVBesedilo/:
     post:
       tags:
-      - doc-2text
+        - doc-2text
       summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo"
       operationId: datoteka_v_besedilo_post
       requestBody:
@@ -127,48 +127,48 @@ paths:
   /oss/steviloBesedilPoIskanju:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne število besedil glede na iskalne pogoje
       operationId: get_number_texts
       parameters:
-      - name: leta
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: vrste
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+        - name: leta
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: vrste
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: kljucnebesede
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: cerifpodrocja
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           description: OK
@@ -182,48 +182,48 @@ paths:
   /oss/izlusciPoIskanju:
     get:
       tags:
-      - oss
+        - oss
       summary: 'Vrne terminloške kandidate glede na '
       operationId: get_extracted_words
       parameters:
-      - name: leta
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: vrste
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+        - name: leta
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: vrste
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: kljucnebesede
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: cerifpodrocja
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           description: OK
@@ -238,49 +238,49 @@ paths:
   /oss/datotekePoIskanju:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne
         pogoje
       operationId: get_files
       parameters:
-      - name: leta
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: vrste
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+        - name: leta
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: vrste
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: kljucnebesede
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: cerifpodrocja
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           description: OK
@@ -298,18 +298,18 @@ paths:
   /oss/datotekaPoId:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne binarni zapis v originalnem formatu po id-ju datoteke
       operationId: get_file
       parameters:
-      - name: file_id
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          format: int64
+        - name: file_id
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -325,48 +325,48 @@ paths:
   /oss/conlluPoIskanju:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne seznam CoNNL-U-jev glede na iskalne pogoje
       operationId: get_conllus
       parameters:
-      - name: leta
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: vrste
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+        - name: leta
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: vrste
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: kljucnebesede
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: cerifpodrocja
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           description: OK
@@ -381,18 +381,18 @@ paths:
   /oss/conlluPoId:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne CoNNL-U po id-ju datoteke
       operationId: get_conllu
       parameters:
-      - name: file_id
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          format: int64
+        - name: file_id
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -405,18 +405,18 @@ paths:
   /oss/besediloPoId:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne besedilo po id-ju datoteke
       operationId: oss_besedilo_po_id_get
       parameters:
-      - name: file_id
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          format: int64
+        - name: file_id
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -429,48 +429,48 @@ paths:
   /oss/besedilaPoIskanju:
     get:
       tags:
-      - oss
+        - oss
       summary: Vrne seznam besedil glede na iskalne pogoje
       operationId: get_texts
       parameters:
-      - name: leta
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: vrste
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+        - name: leta
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: vrste
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: kljucnebesede
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: cerifpodrocja
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           description: OK
@@ -508,18 +508,18 @@ components:
             format: int64
       example:
         podporneutezi:
-        - 6.0274563
-        - 6.0274563
+          - 6.0274563
+          - 6.0274563
         pogostostpojavljanja:
-        - 1
-        - 1
+          - 1
+          - 1
         POSoznake: POSoznake
         kanonicnaoblika: kanonicnaoblika
         nosilnautez: 0.8008282
         kandidat: kandidat
     JobResponse:
       required:
-      - finished_job
+        - finished_job
       type: object
       properties:
         finished_job:
@@ -555,7 +555,7 @@ components:
             type: string
     datotekaVBesedilo_ocr_body:
       required:
-      - file
+        - file
       type: object
       properties:
         file:
@@ -563,7 +563,15 @@ components:
           format: binary
     datotekaVBesedilo_body:
       required:
-      - file
+        - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVBesediloSync_body:
+      required:
+        - file
       type: object
       properties:
         file:

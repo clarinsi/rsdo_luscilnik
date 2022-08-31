@@ -1,14 +1,21 @@
+from tempfile import TemporaryFile
+
 import connexion
 import six
 # import tika
 import requests
-
+import json
 from swagger_server import util
 import pandas as pd
 import docx
 import codecs
 import xml.etree.ElementTree as ET
 from PyPDF2 import PdfReader
+
+tika_server = "http://tika:9998/tika"
+
+
+tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
 
 
 def datoteka_v_besedilo_post(file=None):  # noqa: E501
@@ -21,25 +28,33 @@ def datoteka_v_besedilo_post(file=None):  # noqa: E501
 
     :rtype: str
     """
-    #zakaj ? tika server se požene zraven v dodatnem containerju in se datoteka samo pošlje tja, nazaj pa se dobi čisto besedilo...
-    #tika ima rest api
     if file is None:
         return "No file provided", 400
+    try:
+        response = requests.put(tika_server, data=file)
+        return response.text, 200
+    except Exception as e:
+        return str(e), 500
 
-    tika_server="http://tika:9998/tika"
-    response=requests.post(tika_server, data=file)
-    return response.text, 200
+
+def get_text_ocr(file=None):
+    """Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo s pomočjo ocr razpoznavanja
 
 
-def get_text_ocr(file=None):  # noqa: E501
-    
+     # noqa: E501
+
+    :param file:
+    :type file: strstr
+
+    :rtype: str
+    """
 
     if file is None:
         return "No file provided", 400
-
-    tika_server="http://tika:9998/tika"
-    #za ocr se zraven samo doda header 
-    response=requests.post(tika_server, data=file,headers={"X-Tika-PDFOcrStrategy":"ocr_only","X-Tika-OCRLanguage":"slv+eng"})
-    return response.text, 200
-
+    try:
+        response = requests.put(tika_server, data=file,
+                                 headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
+        return response.text, 200
+    except Exception as e:
+        return str(e), 500
 
