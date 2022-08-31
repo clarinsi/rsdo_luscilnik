@@ -11,7 +11,7 @@ services:
             - ./swagger_server/classla/classla_resources:/root/classla_resources
         environment:
             - PYTHONUNBUFFERED=1
-    tika:
+    tika2:
         image: apache/tika:1.28.4-full
         entrypoint: ["/bin/sh", "-c", "java -jar /tika-server-1.28.4.jar -h 0.0.0.0 -p 9999"]
         restart: always
