@@ -11,6 +11,7 @@ import codecs
 import xml.etree.ElementTree as ET
 from PyPDF2 import PdfReader
 from swagger_server.classla import cl_utils
+import traceback
 
 tika_server = "http://tika2:9999/tika"
 
@@ -34,6 +35,8 @@ def datoteka_v_besedilo_post(file=None):  # noqa: E501
         response = requests.put(tika_server, data=file)
         return response.text, 200
     except Exception as e:
+        print("Something weird went wrong")
+        traceback.print_exc()
         return str(e), 500
 
 
