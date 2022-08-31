@@ -16,8 +16,8 @@ import traceback
 tika_server = "http://tika2:9999/tika"
 
 # endpoint below to be used only for development purposes (don't need to run docker)
-tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
-# TEMPORARY workaround: running server without docker...
+# tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
+
 
 def datoteka_v_besedilo_post(file=None):  # noqa: E501
     """Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo
