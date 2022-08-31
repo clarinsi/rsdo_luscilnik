@@ -83,6 +83,26 @@ paths:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.extract_controller
+  /datotekaVBesedilo:
+    post:
+      tags:
+        - doc-2text
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo"
+      operationId: datoteka_v_besedilo_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesedilo_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
   /datotekaVBesedilo/ocr:
     post:
       tags:
@@ -104,17 +124,38 @@ paths:
                 type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.doc2text_controller
-  /datotekaVBesedilo/:
+  /datotekaVConlluSync:
     post:
       tags:
         - doc-2text
-      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo"
-      operationId: datoteka_v_besedilo_post
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca conllu"
+      operationId: datoteka_v_besedilo_in_classla
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/datotekaVBesedilo_body'
+              $ref: '#/components/schemas/datotekaVConlluSync_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+  /datotekaVConlluSync/ocr:
+    post:
+      tags:
+        - doc-2text
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v conllu s\
+        \ pomočjo ocr razpoznavanja"
+      operationId: get_conllu_ocr
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVConlluSync_ocr_body'
       responses:
         "200":
           description: OK
@@ -553,14 +594,6 @@ components:
           type: array
           items:
             type: string
-    datotekaVBesedilo_ocr_body:
-      required:
-        - file
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
     datotekaVBesedilo_body:
       required:
         - file
@@ -569,7 +602,23 @@ components:
         file:
           type: string
           format: binary
-    datotekaVBesediloSync_body:
+    datotekaVBesedilo_ocr_body:
+      required:
+        - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluSync_body:
+      required:
+        - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluSync_ocr_body:
       required:
         - file
       type: object

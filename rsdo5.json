@@ -135,6 +135,44 @@
                 }
             }
         },
+        "/datotekaVBesedilo": {
+            "post": {
+                "tags": [
+                    "doc-2text"
+                ],
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/datotekaVBesedilo/ocr": {
             "post": {
                 "tags": [
@@ -174,12 +212,52 @@
                 }
             }
         },
-        "/datotekaVBesedilo/": {
+        "/datotekaVConlluSync": {
             "post": {
                 "tags": [
                     "doc-2text"
                 ],
-                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo",
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca conllu",
+                "operationId": "datotekaVBesediloInClassla",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/datotekaVConlluSync/ocr": {
+            "post": {
+                "tags": [
+                    "doc-2text"
+                ],
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v conllu s pomočjo ocr razpoznavanja",
+                "operationId": "getConlluOcr",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
