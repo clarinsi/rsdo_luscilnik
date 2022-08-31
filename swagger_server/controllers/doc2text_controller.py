@@ -1,6 +1,7 @@
 import connexion
 import six
 # import tika
+import requests
 
 from swagger_server import util
 import pandas as pd
@@ -20,37 +21,25 @@ def datoteka_v_besedilo_post(file=None):  # noqa: E501
 
     :rtype: str
     """
-
+    #zakaj ? tika server se požene zraven v dodatnem containerju in se datoteka samo pošlje tja, nazaj pa se dobi čisto besedilo...
+    #tika ima rest api
     if file is None:
         return "No file provided", 400
-    elif "openxmlformats-officedocument.wordprocessingml.document" in file.content_type:
-        content = [p.text for p in docx.Document(file).paragraphs]
-    elif "text/plain" in file.content_type:
-        content = file.read().decode('utf-8')
-    elif "application/pdf" in file.content_type:
-        reader = PdfReader(file)
-        content = '\n'.join([p.extract_text() for p in reader.pages])
-        content = "ZACASNO UPORABLJEN DRUGI BRALEC KOT TIKA, TA BO SE DODANA KASNEJE...\n\n" + content
-    elif "text/xml" in file.content_type:
-        root = ET.parse(file).getroot()
-        plainText = root.findall('PlainText')
-        if len(plainText) == 0:
-            return "Didn't find anything in PlainText", 400
-        content = '\n'.join([pt.text for pt in plainText])
-    else:
-        return "Currently supporing only docx, txt/plain, pdf, xml*... more will be added later", 501
 
-    return content, 200
+    tika_server="http://tika:9998/tika"
+    response=requests.post(tika_server, data=file)
+    return response.text, 200
 
 
 def get_text_ocr(file=None):  # noqa: E501
-    """Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo s pomočjo ocr razpoznavanja
+    
 
-     # noqa: E501
+    if file is None:
+        return "No file provided", 400
 
-    :param file: 
-    :type file: strstr
+    tika_server="http://tika:9998/tika"
+    #za ocr se zraven samo doda header 
+    response=requests.post(tika_server, data=file,headers={"X-Tika-PDFOcrStrategy":"ocr_only","X-Tika-OCRLanguage":"slv+eng"})
+    return response.text, 200
 
-    :rtype: str
-    """
-    return 'Not yet implemented'
+

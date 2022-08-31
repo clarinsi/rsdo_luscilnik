@@ -11,3 +11,8 @@ services:
             - ./swagger_server/classla/classla_resources:/root/classla_resources
         environment:
             - PYTHONUNBUFFERED=1
+    tika:
+        image: apache/tika
+        restart: always
+        ports:
+            - 9998:9998
