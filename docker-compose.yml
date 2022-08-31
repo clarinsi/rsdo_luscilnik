@@ -12,7 +12,8 @@ services:
         environment:
             - PYTHONUNBUFFERED=1
     tika:
-        image: apache/tika
+        image: apache/tika:1.28.4-full
+        entrypoint: ["/bin/sh", "-c", "java -jar /tika-server-1.28.4.jar -h 0.0.0.0 -p 9999"]
         restart: always
         ports:
-            - 9998:9998
+            - 9999:9999
