@@ -17,7 +17,7 @@ import traceback
 import cv2
 import numpy as np
 
-tika_server = "http://tika2:9999/tika_NAROBENURLZANALASC"
+tika_server = "http://tika2:9999/tika"
 
 
 # endpoint below to be used only for development purposes (don't need to run docker)
