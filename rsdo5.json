@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/oznaciBesedilo": {
+        "/oznaciBesediloAsync": {
             "post": {
                 "tags": [
                     "marktext"

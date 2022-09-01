@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.oznaci_besedilo_body import OznaciBesediloBody  # noqa: E501
+from swagger_server.models.oznaci_besedilo_async_body import OznaciBesediloAsyncBody  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
@@ -17,9 +17,9 @@ class TestMarktextController(BaseTestCase):
 
         Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format
         """
-        body = OznaciBesediloBody()
+        body = OznaciBesediloAsyncBody()
         response = self.client.open(
-            '/oznaciBesedilo',
+            '/oznaciBesediloAsync',
             method='POST',
             data=json.dumps(body),
             content_type='application/json')

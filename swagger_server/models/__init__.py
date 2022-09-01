@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 # import models into model package
 from swagger_server.models.izlusci_body import IzlusciBody
-from swagger_server.models.oznaci_besedilo_body import OznaciBesediloBody
+from swagger_server.models.oznaci_besedilo_async_body import OznaciBesediloAsyncBody
 from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat
 from swagger_server.models.job_response import JobResponse
 from swagger_server.models.datoteka_v_besedilo_body import DatotekaVBesediloBody
