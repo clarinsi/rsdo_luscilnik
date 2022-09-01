@@ -45,6 +45,12 @@ class JobManager:
     @staticmethod
     def create_job(job_type, job_input) -> Tuple(Job, bool):
         """
+        :param: job_type
+        :possibilities:
+        1 = txt to classla
+        2 = file to txt and then mark with classla
+        3 = file with ocr then to classla
+
         :return: Job object, Did already exist boolean
         """
         try:

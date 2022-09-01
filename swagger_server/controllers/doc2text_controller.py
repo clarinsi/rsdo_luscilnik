@@ -24,7 +24,7 @@ tika_server = "http://tika2:9999/tika_NAROBENURLZANALASC"
 # tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
 
 
-def extract_text(file):
+def extract_text_prepResp(file):
     if tika_responding():
         response = requests.put(tika_server, data=file)
         return response.text, 200
@@ -47,7 +47,7 @@ def extract_text(file):
     return content, 200
 
 
-def ocr_text(file):
+def ocr_text_prepResp(file):
     if tika_responding():
         response = requests.put(tika_server, data=file,
                                 headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
@@ -87,7 +87,7 @@ def datoteka_v_besedilo_post(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        return extract_text(file)
+        return extract_text_prepResp(file)
     except Exception as e:
         return str(e), 500
 
@@ -105,7 +105,7 @@ def get_text_ocr(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        return ocr_text(file)
+        return ocr_text_prepResp(file)
     except Exception as e:
         return str(e), 500
 
@@ -125,7 +125,7 @@ def datoteka_v_besedilo_in_classla(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        txt, _ = extract_text(file)
+        txt, _ = extract_text_prepResp(file)
         return cl_utils.raw_text_to_conllu(txt)
     except Exception as e:
         return str(e), 500
@@ -151,7 +151,7 @@ def get_conllu_ocr(file=None):  # noqa: E501
                                     headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
             return cl_utils.raw_text_to_conllu(response.text)
         else:
-            txt, _ = ocr_text(file)
+            txt, _ = ocr_text_prepResp(file)
             return cl_utils.raw_text_to_conllu(txt)
     except Exception as e:
         return str(e), 500

@@ -87,6 +87,84 @@
                 }
             }
         },
+        "/pretvoriDatotekoInOznaciAsync": {
+            "post": {
+                "tags": [
+                    "marktext"
+                ],
+                "summary": "Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "operationId": "getTextFromFile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pretvoriDatotekoInOznaciAsync/ocr": {
+            "post": {
+                "tags": [
+                    "marktext"
+                ],
+                "summary": "Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "operationId": "getTextFromFileOcr",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/izlusci": {
             "post": {
                 "tags": [
