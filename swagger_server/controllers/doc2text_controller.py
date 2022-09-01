@@ -24,10 +24,11 @@ tika_server = "http://tika2:9999/tika_NAROBENURLZANALASC"
 # tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
 
 
-def extract_text_if_no_tika(file):
-    if file is None:
-        return "No file provided", 400
-    elif "openxmlformats-officedocument.wordprocessingml.document" in file.content_type:
+def extract_text(file):
+    if tika_responding():
+        response = requests.put(tika_server, data=file)
+        return response.text, 200
+    if "openxmlformats-officedocument.wordprocessingml.document" in file.content_type:
         content = [p.text for p in docx.Document(file).paragraphs]
     elif "application/pdf" in file.content_type:
         reader = PdfReader(file)
@@ -46,7 +47,12 @@ def extract_text_if_no_tika(file):
     return content, 200
 
 
-def ocr_text_if_no_tika(file):
+def ocr_text(file):
+    if tika_responding():
+        response = requests.put(tika_server, data=file,
+                                headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
+        return response.text, 200
+
     win_p = "C:/Program Files/Tesseract-OCR/tesseract.exe"
     if os.path.exists(win_p):
         pytesseract.pytesseract.tesseract_cmd = win_p
@@ -81,13 +87,8 @@ def datoteka_v_besedilo_post(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        if not tika_responding():
-            return extract_text_if_no_tika(file)
-        response = requests.put(tika_server, data=file)
-        return response.text, 200
+        return extract_text(file)
     except Exception as e:
-        print("Something weird went wrong")
-        traceback.print_exc()
         return str(e), 500
 
 
@@ -104,11 +105,7 @@ def get_text_ocr(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        if not tika_responding():
-            return ocr_text_if_no_tika(file)
-        response = requests.put(tika_server, data=file,
-                                headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
-        return response.text, 200
+        return ocr_text(file)
     except Exception as e:
         return str(e), 500
 
@@ -128,12 +125,8 @@ def datoteka_v_besedilo_in_classla(file=None):  # noqa: E501
     if file is None:
         return "No file provided", 400
     try:
-        if tika_responding():
-            response = requests.put(tika_server, data=file)
-            return cl_utils.raw_text_to_conllu(response.text)
-        else:
-            txt, _ = extract_text_if_no_tika(file)
-            return cl_utils.raw_text_to_conllu(txt)
+        txt, _ = extract_text(file)
+        return cl_utils.raw_text_to_conllu(txt)
     except Exception as e:
         return str(e), 500
 
@@ -158,7 +151,7 @@ def get_conllu_ocr(file=None):  # noqa: E501
                                     headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
             return cl_utils.raw_text_to_conllu(response.text)
         else:
-            txt, _ = ocr_text_if_no_tika(file)
+            txt, _ = ocr_text(file)
             return cl_utils.raw_text_to_conllu(txt)
     except Exception as e:
         return str(e), 500
