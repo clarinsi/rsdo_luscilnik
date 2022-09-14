@@ -28,13 +28,13 @@ class BaseModel(Model):
 
 class Job(BaseModel):
     id = AutoField()
-    job_type = IntegerField()  # 1 = oznaci besedilo
+    job_type = IntegerField()  # 1 = pretvori datoteko v besedilo, 2 = oznaci besedilo, 21 = oboje
     job_input = TextField(index=True)
     job_output = TextField(null=True)
     created_on = DateTimeField(default=datetime.utcnow)
     finished_on = DateTimeField(null=True)
-    input_size = IntegerField()
     started_on = DateTimeField(null=True)
+    input_size = IntegerField()
 
 
 # db.drop_tables([Job])

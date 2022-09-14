@@ -27,14 +27,6 @@
                             "type": "integer",
                             "format": "int64"
                         }
-                    },
-                    {
-                        "name": "show_estimated_completion",
-                        "in": "query",
-                        "schema": {
-                            "type": "boolean"
-                        },
-                        "description": "Calculate estimate time remaining based on various factors (could be inaccurate)"
                     }
                 ],
                 "responses": {
@@ -49,14 +41,44 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Izbriše job",
+                "operationId": "deleteJob",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/oznaciBesediloAsync": {
             "post": {
                 "tags": [
-                    "marktext"
+                    "marktext-async"
                 ],
-                "summary": "Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "summary": "Označi surovo (angl. raw) besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
                 "operationId": "getText",
                 "requestBody": {
                     "content": {
@@ -87,13 +109,13 @@
                 }
             }
         },
-        "/pretvoriDatotekoInOznaciAsync": {
+        "/datotekaVBesediloAsync": {
             "post": {
                 "tags": [
-                    "marktext"
+                    "marktext-async"
                 ],
-                "summary": "Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
-                "operationId": "getTextFromFile",
+                "summary": "Pretvori datoteko v besedilo, vrača tekst",
+                "operationId": "getTextFromDocAsync",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -126,13 +148,91 @@
                 }
             }
         },
-        "/pretvoriDatotekoInOznaciAsync/ocr": {
+        "/datotekaVConlluAsync": {
             "post": {
                 "tags": [
-                    "marktext"
+                    "marktext-async"
                 ],
-                "summary": "Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
-                "operationId": "getTextFromFileOcr",
+                "summary": "Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "operationId": "getConlluFromFileAsync",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/datotekaVConlluAsync/ocr": {
+            "post": {
+                "tags": [
+                    "marktext-async"
+                ],
+                "summary": "Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format",
+                "operationId": "getConlluFromFileOcrAsync",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/datotekaVBesediloAsync/ocr": {
+            "post": {
+                "tags": [
+                    "marktext-async"
+                ],
+                "summary": "Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja, vrača tekst",
+                "operationId": "getTextFromFileOcrAsync",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -213,12 +313,12 @@
                 }
             }
         },
-        "/datotekaVBesedilo": {
+        "/datotekaVBesediloSync": {
             "post": {
                 "tags": [
-                    "doc-2text"
+                    "marktext-sync"
                 ],
-                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo",
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača besedilo",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -251,10 +351,10 @@
                 }
             }
         },
-        "/datotekaVBesedilo/ocr": {
+        "/datotekaVBesediloSync/ocr": {
             "post": {
                 "tags": [
-                    "doc-2text"
+                    "marktext-sync"
                 ],
                 "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo s pomočjo ocr razpoznavanja",
                 "operationId": "getTextOcr",
@@ -293,9 +393,9 @@
         "/datotekaVConlluSync": {
             "post": {
                 "tags": [
-                    "doc-2text"
+                    "marktext-sync"
                 ],
-                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca conllu",
+                "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača conllu",
                 "operationId": "datotekaVBesediloInClassla",
                 "requestBody": {
                     "content": {
@@ -332,7 +432,7 @@
         "/datotekaVConlluSync/ocr": {
             "post": {
                 "tags": [
-                    "doc-2text"
+                    "marktext-sync"
                 ],
                 "summary": "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v conllu s pomočjo ocr razpoznavanja",
                 "operationId": "getConlluOcr",
@@ -867,14 +967,19 @@
             "JobResponse": {
                 "type": "object",
                 "properties": {
-                    "finished_job": {
-                        "type": "boolean"
+                    "job_status": {
+                        "type": "string",
+                        "enum": ["waiting in que", "currently processing", "finished processing"]
                     },
-                    "completed_at": {
+                    "finished_on": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "estimated_completion": {
+                    "started_on": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_on": {
                         "type": "string",
                         "format": "date-time"
                     },

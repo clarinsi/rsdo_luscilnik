@@ -21,15 +21,6 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: show_estimated_completion
-        in: query
-        description: Calculate estimate time remaining based on various factors (could
-          be inaccurate)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: boolean
       responses:
         "200":
           description: OK
@@ -38,12 +29,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/JobResponse'
       x-openapi-router-controller: swagger_server.controllers.jobs_controller
+    delete:
+      tags:
+      - jobs
+      summary: Izbriše job
+      operationId: delete_job
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.jobs_controller
   /oznaciBesediloAsync:
     post:
       tags:
-      - marktext
-      summary: Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne
-        conll-u format
+      - marktext-async
+      summary: Označi surovo (angl. raw) besedilo s classlo/stanzo z uporabo slovenskih
+        modelov ter vrne conll-u format
       operationId: get_text
       requestBody:
         content:
@@ -59,19 +73,39 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.marktext_controller
-  /pretvoriDatotekoInOznaciAsync:
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVBesediloAsync:
     post:
       tags:
-      - marktext
+      - marktext-async
+      summary: "Pretvori datoteko v besedilo, vrača tekst"
+      operationId: get_text_from_doc_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesediloAsync_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVConlluAsync:
+    post:
+      tags:
+      - marktext-async
       summary: Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih
         modelov ter vrne conll-u format
-      operationId: get_text_from_file
+      operationId: get_conllu_from_file_async
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/pretvoriDatotekoInOznaciAsync_body'
+              $ref: '#/components/schemas/datotekaVConlluAsync_body'
       responses:
         "200":
           description: OK
@@ -80,19 +114,19 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.marktext_controller
-  /pretvoriDatotekoInOznaciAsync/ocr:
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVConlluAsync/ocr:
     post:
       tags:
-      - marktext
-      summary: Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja in označi
-        s classlo/stanzo z uporabo slovenskih modelov ter vrne conll-u format
-      operationId: get_text_from_file_ocr
+      - marktext-async
+      summary: Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih
+        modelov ter vrne conll-u format
+      operationId: get_conllu_from_file_ocr_async
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/pretvoriDatotekoInOznaciAsync_ocr_body'
+              $ref: '#/components/schemas/datotekaVConlluAsync_ocr_body'
       responses:
         "200":
           description: OK
@@ -101,7 +135,27 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.marktext_controller
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVBesediloAsync/ocr:
+    post:
+      tags:
+      - marktext-async
+      summary: "Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja, vrača tekst"
+      operationId: get_text_from_file_ocr_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesediloAsync_ocr_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
   /izlusci:
     post:
       tags:
@@ -125,17 +179,17 @@ paths:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.extract_controller
-  /datotekaVBesedilo:
+  /datotekaVBesediloSync:
     post:
       tags:
-      - doc-2text
-      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca besedilo"
-      operationId: datoteka_v_besedilo_post
+      - marktext-sync
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača besedilo"
+      operationId: datoteka_v_besedilo_sync_post
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/datotekaVBesedilo_body'
+              $ref: '#/components/schemas/datotekaVBesediloSync_body'
       responses:
         "200":
           description: OK
@@ -144,11 +198,11 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
-  /datotekaVBesedilo/ocr:
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
+  /datotekaVBesediloSync/ocr:
     post:
       tags:
-      - doc-2text
+      - marktext-sync
       summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo\
         \ s pomočjo ocr razpoznavanja"
       operationId: get_text_ocr
@@ -156,7 +210,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/datotekaVBesedilo_ocr_body'
+              $ref: '#/components/schemas/datotekaVBesediloSync_ocr_body'
       responses:
         "200":
           description: OK
@@ -165,12 +219,12 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
   /datotekaVConlluSync:
     post:
       tags:
-      - doc-2text
-      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vraca conllu"
+      - marktext-sync
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača conllu"
       operationId: datoteka_v_besedilo_in_classla
       requestBody:
         content:
@@ -185,11 +239,11 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
   /datotekaVConlluSync/ocr:
     post:
       tags:
-      - doc-2text
+      - marktext-sync
       summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v conllu s\
         \ pomočjo ocr razpoznavanja"
       operationId: get_conllu_ocr
@@ -206,7 +260,7 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
   /oss/steviloBesedilPoIskanju:
     get:
       tags:
@@ -605,27 +659,35 @@ components:
       - finished_job
       type: object
       properties:
-        finished_job:
-          type: boolean
-        completed_at:
+        job_status:
+          type: string
+          enum:
+          - waiting in que
+          - currently processing
+          - finished processing
+        finished_on:
           type: string
           format: date-time
-        estimated_completion:
+        started_on:
+          type: string
+          format: date-time
+        created_on:
           type: string
           format: date-time
         job_result:
           type: string
       example:
-        completed_at: 2000-01-23T04:56:07.000+00:00
-        estimated_completion: 2000-01-23T04:56:07.000+00:00
+        job_status: finished processing
+        started_on: 2000-01-23T04:56:07.000+00:00
+        created_on: 2000-01-23T04:56:07.000+00:00
+        finished_on: 2000-01-23T04:56:07.000+00:00
         job_result: job_result
-        finished_job: true
     oznaciBesediloAsync_body:
       type: object
       properties:
         besedilo:
           type: string
-    pretvoriDatotekoInOznaciAsync_body:
+    datotekaVBesediloAsync_body:
       required:
       - file
       type: object
@@ -633,7 +695,23 @@ components:
         file:
           type: string
           format: binary
-    pretvoriDatotekoInOznaciAsync_ocr_body:
+    datotekaVConlluAsync_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluAsync_ocr_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVBesediloAsync_ocr_body:
       required:
       - file
       type: object
@@ -652,7 +730,7 @@ components:
           type: array
           items:
             type: string
-    datotekaVBesedilo_body:
+    datotekaVBesediloSync_body:
       required:
       - file
       type: object
@@ -660,7 +738,7 @@ components:
         file:
           type: string
           format: binary
-    datotekaVBesedilo_ocr_body:
+    datotekaVBesediloSync_ocr_body:
       required:
       - file
       type: object

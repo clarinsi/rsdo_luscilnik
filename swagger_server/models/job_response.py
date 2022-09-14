@@ -14,34 +14,39 @@ class JobResponse(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, finished_job: bool=None, completed_at: datetime=None, estimated_completion: datetime=None, job_result: str=None):  # noqa: E501
+    def __init__(self, job_status: str=None, finished_on: datetime=None, started_on: datetime=None, created_on: datetime=None, job_result: str=None):  # noqa: E501
         """JobResponse - a model defined in Swagger
 
-        :param finished_job: The finished_job of this JobResponse.  # noqa: E501
-        :type finished_job: bool
-        :param completed_at: The completed_at of this JobResponse.  # noqa: E501
-        :type completed_at: datetime
-        :param estimated_completion: The estimated_completion of this JobResponse.  # noqa: E501
-        :type estimated_completion: datetime
+        :param job_status: The job_status of this JobResponse.  # noqa: E501
+        :type job_status: str
+        :param finished_on: The finished_on of this JobResponse.  # noqa: E501
+        :type finished_on: datetime
+        :param started_on: The started_on of this JobResponse.  # noqa: E501
+        :type started_on: datetime
+        :param created_on: The created_on of this JobResponse.  # noqa: E501
+        :type created_on: datetime
         :param job_result: The job_result of this JobResponse.  # noqa: E501
         :type job_result: str
         """
         self.swagger_types = {
-            'finished_job': bool,
-            'completed_at': datetime,
-            'estimated_completion': datetime,
+            'job_status': str,
+            'finished_on': datetime,
+            'started_on': datetime,
+            'created_on': datetime,
             'job_result': str
         }
 
         self.attribute_map = {
-            'finished_job': 'finished_job',
-            'completed_at': 'completed_at',
-            'estimated_completion': 'estimated_completion',
+            'job_status': 'job_status',
+            'finished_on': 'finished_on',
+            'started_on': 'started_on',
+            'created_on': 'created_on',
             'job_result': 'job_result'
         }
-        self._finished_job = finished_job
-        self._completed_at = completed_at
-        self._estimated_completion = estimated_completion
+        self._job_status = job_status
+        self._finished_on = finished_on
+        self._started_on = started_on
+        self._created_on = created_on
         self._job_result = job_result
 
     @classmethod
@@ -56,69 +61,94 @@ class JobResponse(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def finished_job(self) -> bool:
-        """Gets the finished_job of this JobResponse.
+    def job_status(self) -> str:
+        """Gets the job_status of this JobResponse.
 
 
-        :return: The finished_job of this JobResponse.
-        :rtype: bool
+        :return: The job_status of this JobResponse.
+        :rtype: str
         """
-        return self._finished_job
+        return self._job_status
 
-    @finished_job.setter
-    def finished_job(self, finished_job: bool):
-        """Sets the finished_job of this JobResponse.
+    @job_status.setter
+    def job_status(self, job_status: str):
+        """Sets the job_status of this JobResponse.
 
 
-        :param finished_job: The finished_job of this JobResponse.
-        :type finished_job: bool
+        :param job_status: The job_status of this JobResponse.
+        :type job_status: str
         """
-        if finished_job is None:
-            raise ValueError("Invalid value for `finished_job`, must not be `None`")  # noqa: E501
+        allowed_values = ["waiting in que", "currently processing", "finished processing"]  # noqa: E501
+        if job_status not in allowed_values:
+            raise ValueError(
+                "Invalid value for `job_status` ({0}), must be one of {1}"
+                .format(job_status, allowed_values)
+            )
 
-        self._finished_job = finished_job
+        self._job_status = job_status
 
     @property
-    def completed_at(self) -> datetime:
-        """Gets the completed_at of this JobResponse.
+    def finished_on(self) -> datetime:
+        """Gets the finished_on of this JobResponse.
 
 
-        :return: The completed_at of this JobResponse.
+        :return: The finished_on of this JobResponse.
         :rtype: datetime
         """
-        return self._completed_at
+        return self._finished_on
 
-    @completed_at.setter
-    def completed_at(self, completed_at: datetime):
-        """Sets the completed_at of this JobResponse.
+    @finished_on.setter
+    def finished_on(self, finished_on: datetime):
+        """Sets the finished_on of this JobResponse.
 
 
-        :param completed_at: The completed_at of this JobResponse.
-        :type completed_at: datetime
+        :param finished_on: The finished_on of this JobResponse.
+        :type finished_on: datetime
         """
 
-        self._completed_at = completed_at
+        self._finished_on = finished_on
 
     @property
-    def estimated_completion(self) -> datetime:
-        """Gets the estimated_completion of this JobResponse.
+    def started_on(self) -> datetime:
+        """Gets the started_on of this JobResponse.
 
 
-        :return: The estimated_completion of this JobResponse.
+        :return: The started_on of this JobResponse.
         :rtype: datetime
         """
-        return self._estimated_completion
+        return self._started_on
 
-    @estimated_completion.setter
-    def estimated_completion(self, estimated_completion: datetime):
-        """Sets the estimated_completion of this JobResponse.
+    @started_on.setter
+    def started_on(self, started_on: datetime):
+        """Sets the started_on of this JobResponse.
 
 
-        :param estimated_completion: The estimated_completion of this JobResponse.
-        :type estimated_completion: datetime
+        :param started_on: The started_on of this JobResponse.
+        :type started_on: datetime
         """
 
-        self._estimated_completion = estimated_completion
+        self._started_on = started_on
+
+    @property
+    def created_on(self) -> datetime:
+        """Gets the created_on of this JobResponse.
+
+
+        :return: The created_on of this JobResponse.
+        :rtype: datetime
+        """
+        return self._created_on
+
+    @created_on.setter
+    def created_on(self, created_on: datetime):
+        """Sets the created_on of this JobResponse.
+
+
+        :param created_on: The created_on of this JobResponse.
+        :type created_on: datetime
+        """
+
+        self._created_on = created_on
 
     @property
     def job_result(self) -> str:

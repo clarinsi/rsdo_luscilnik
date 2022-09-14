@@ -1,9 +1,6 @@
 import connexion
-import six
 
 from swagger_server.models.izlusci_body import IzlusciBody  # noqa: E501
-from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat  # noqa: E501
-from swagger_server import util
 
 
 def get_candidates(body):  # noqa: E501

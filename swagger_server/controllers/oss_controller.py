@@ -1,11 +1,5 @@
-import connexion
-import six
-import os
-
-from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat  # noqa: E501
 from swagger_server import util
 from flask import send_file
-from swagger_server.db_utils import Ngrams_Manager
 
 
 def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
