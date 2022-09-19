@@ -1,6 +1,11 @@
+import pathlib
+
+import werkzeug.datastructures
 from peewee import *
 from datetime import datetime
 import os
+from swagger_server.util import get_random_filename
+from werkzeug.utils import secure_filename
 
 LOCAL_PATH = "requets_db/dbs"
 SERVER_PATH = "swagger_server/requets_db/dbs"
@@ -27,17 +32,18 @@ class BaseModel(Model):
 
 
 class Job(BaseModel):
-    id = AutoField()
-    job_type = IntegerField()  # 1 = pretvori datoteko v besedilo, 2 = oznaci besedilo, 21 = oboje
-    job_input = TextField(index=True)
+    id = AutoField(index=True)
+    job_type = IntegerField()
+    job_input = TextField(index=True, null=True)
     job_output = TextField(null=True)
     created_on = DateTimeField(default=datetime.utcnow)
     finished_on = DateTimeField(null=True)
     started_on = DateTimeField(null=True)
     input_size = IntegerField()
+    input_file = TextField(index=True, null=True)
 
 
-# db.drop_tables([Job])
+db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
 db.create_tables([Job])
 
 
@@ -47,15 +53,27 @@ class JobManager:
         """
         :param: job_type
         :possibilities:
-        1 = txt to classla
-        2 = file to txt and then mark with classla
-        3 = file with ocr then to classla
+        # 1 = pretvori datoteko v besedilo, 2 = oznaci besedilo, 12 = oboje
+        # 3 = pretvori dat v besedilo OCR, 2 = oznaci besedilo, 32 = oboje
 
         :return: Job object, Did already exist boolean
         """
         try:
-            job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
-            return job, not is_new
+            if job_type == 2:
+                job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
+            elif job_type in [1, 3, 12, 32]:
+                tmp_file = ""
+                while True:
+                    # just in case a VERY rare chance of a same generate name happens
+                    tmp_file = "tmp/" + secure_filename(get_random_filename() + "_" + job_input.filename)
+                    if not os.path.exists(tmp_file):
+                        break
+                pathlib.Path('tmp').mkdir(exist_ok=True)
+                job_input: werkzeug.datastructures.FileStorage
+                job_input.save(tmp_file)
+                job, is_new = Job.get_or_create(job_type=job_type, input_file=tmp_file, input_size=-1)
+            return job, is_new
+
         except Exception as e:
             print(f'Exception at creating a job: {e}')
             return None, False

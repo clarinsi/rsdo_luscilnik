@@ -8,6 +8,7 @@ from PyPDF2 import PdfReader
 from swagger_server.classla import cl_utils
 import cv2
 import numpy as np
+import magic
 
 tika_server = "http://tika2:9999/tika"
 
@@ -15,17 +16,21 @@ tika_server = "http://tika2:9999/tika"
 # endpoint below to be used only for development purposes (don't need to run docker)
 # tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
 
-def extract_text_prepResp(file):
+def extract_text_prepResp(file, content_type=""):
+    content_type = file.content_type
+    if content_type is None:
+        content_type = magic.from_file(file.stream.name, mime=True)
+
     if tika_responding():
         response = requests.put(tika_server, data=file)
         return response.text, 200
-    if "openxmlformats-officedocument.wordprocessingml.document" in file.content_type:
+    if "openxmlformats-officedocument.wordprocessingml.document" in content_type:
         content = '\n'.join([p.text for p in docx.Document(file).paragraphs])
-    elif "application/pdf" in file.content_type:
+    elif "application/pdf" in content_type:
         reader = PdfReader(file)
         content = '\n'.join([p.extract_text() for p in reader.pages])
         content = content
-    elif "text/xml" in file.content_type:
+    elif "text/xml" in content_type:
         root = ET.parse(file).getroot()
         plainText = root.findall('PlainText')
         if len(plainText) == 0:
