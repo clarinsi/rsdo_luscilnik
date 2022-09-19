@@ -17,7 +17,7 @@ CLASSLA_CONCURANCE_LIMIT = 3
 DOC2TEXT_CONCURANCE_LIMIT = 4
 
 classla_sem = threading.Semaphore(CLASSLA_CONCURANCE_LIMIT)
-doc2text_sem = asyncio.Semaphore(DOC2TEXT_CONCURANCE_LIMIT)
+doc2text_sem = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT)
 
 
 def delete_job(job_id):  # noqa: E501
