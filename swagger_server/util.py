@@ -5,7 +5,6 @@ import six
 import typing
 from swagger_server import type_util
 import pandas as pd
-from datetime import datetime
 import string
 import random
 
@@ -192,7 +191,7 @@ def get_files_by_keywords(kljucnebesede):
 
 
 def get_random_filename():
-    ts = str(int(datetime.now().timestamp()))
+    ts = str(int(datetime.datetime.now().timestamp()))
     extra = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     return f'{ts}_{extra}'
 
