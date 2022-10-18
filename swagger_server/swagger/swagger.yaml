@@ -156,17 +156,18 @@ paths:
                 type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
-  /izlusci:
+  /izlusciSync:
     post:
       tags:
       - extract
-      summary: Izlusci terminološke kandidate iz seznama besedil v conllu obliki
-      operationId: get_candidates
+      summary: "Izlusci terminološke kandidate iz seznama besedil v conllu obliki\
+        \ [sihrono, rezultat v sami zahtevi]"
+      operationId: get_candidates_sync
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/izlusci_body'
+              $ref: '#/components/schemas/izlusciSync_body'
         required: true
       responses:
         "200":
@@ -177,6 +178,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.extract_controller
+  /izlusciAsync:
+    post:
+      tags:
+      - extract
+      summary: "Izlusci terminološke kandidate iz seznama besedil v conllu obliki\
+        \ [asinhrono, ustvari novi job]"
+      operationId: get_candidates_async
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/izlusciAsync_body'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.extract_controller
   /datotekaVBesediloSync:
@@ -677,7 +700,7 @@ components:
         job_result:
           type: string
       example:
-        job_status: finished processing
+        job_status: waiting in que
         started_on: 2000-01-23T04:56:07.000+00:00
         created_on: 2000-01-23T04:56:07.000+00:00
         finished_on: 2000-01-23T04:56:07.000+00:00
@@ -719,7 +742,18 @@ components:
         file:
           type: string
           format: binary
-    izlusci_body:
+    izlusciSync_body:
+      type: object
+      properties:
+        conllus:
+          type: array
+          items:
+            type: string
+        prepovedaneBesede:
+          type: array
+          items:
+            type: string
+    izlusciAsync_body:
       type: object
       properties:
         conllus:

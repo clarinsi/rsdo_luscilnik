@@ -1,8 +1,14 @@
+import codecs
 import datetime
 import os.path
+import pathlib
 
 import six
 import typing
+
+import werkzeug.datastructures
+from werkzeug.utils import secure_filename
+
 from swagger_server import type_util
 import pandas as pd
 import string
@@ -195,3 +201,15 @@ def get_random_filename():
     extra = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     return f'{ts}_{extra}'
 
+
+def create_random_file_in_tmp_folder(fill_content, extension=""):
+    pathlib.Path('tmp').mkdir(exist_ok=True)
+    tmp_file = ""
+    while True:
+        # just in case a VERY rare chance of a same generate name happens
+        tmp_file = "tmp/" + secure_filename(get_random_filename() + extension)
+        if not os.path.exists(tmp_file):
+            break
+    with codecs.open(tmp_file, 'w', 'utf-8') as f:
+        f.write(fill_content)
+    return tmp_file

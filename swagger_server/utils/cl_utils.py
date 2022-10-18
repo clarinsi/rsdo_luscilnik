@@ -32,3 +32,16 @@ def multipla_conllus_to_one_from_file_ids(list_file_ids):
             sent_cnt += 1
 
     return ret
+
+
+def multipla_conllus_to_one_from_conllus_arr(list_conllus):
+    sent_cnt = 1
+    ret = "# newpar id = 1\n"
+    for conllu in list_conllus:
+        conllu = conllu.replace('\r\n', '\n')
+        matches = sent_extractor.finditer(conllu)
+        for match in matches:
+            ret += f'# sent_id = 1.{sent_cnt}{match.group(1)}\n\n'
+            sent_cnt += 1
+
+    return ret

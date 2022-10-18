@@ -55,6 +55,7 @@ class JobManager:
         :possibilities:
         # 1 = pretvori datoteko v besedilo, 2 = oznaci besedilo, 12 = oboje
         # 3 = pretvori dat v besedilo OCR, 2 = oznaci besedilo, 32 = oboje
+        # 4 = izlusci async
 
         :return: Job object, Did already exist boolean
         """

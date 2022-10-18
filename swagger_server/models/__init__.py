@@ -11,7 +11,8 @@ from swagger_server.models.datoteka_v_conllu_async_body import DatotekaVConlluAs
 from swagger_server.models.datoteka_v_conllu_async_ocr_body import DatotekaVConlluAsyncOcrBody
 from swagger_server.models.datoteka_v_conllu_sync_body import DatotekaVConlluSyncBody
 from swagger_server.models.datoteka_v_conllu_sync_ocr_body import DatotekaVConlluSyncOcrBody
-from swagger_server.models.izlusci_body import IzlusciBody
 from swagger_server.models.job_response import JobResponse
 from swagger_server.models.oznaci_besedilo_async_body import OznaciBesediloAsyncBody
 from swagger_server.models.terminoloski_kandidat import TerminoloskiKandidat
+from swagger_server.models.izlusci_async_body import IzlusciAsyncBody
+from swagger_server.models.izlusci_sync_body import IzlusciSyncBody

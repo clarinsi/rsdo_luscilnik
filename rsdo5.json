@@ -265,13 +265,13 @@
                 }
             }
         },
-        "/izlusci": {
+        "/izlusciSync": {
             "post": {
                 "tags": [
                     "extract"
                 ],
-                "summary": "Izlusci terminološke kandidate iz seznama besedil v conllu obliki",
-                "operationId": "getCandidates",
+                "summary": "Izlusci terminološke kandidate iz seznama besedil v conllu obliki [sihrono, rezultat v sami zahtevi]",
+                "operationId": "getCandidates_sync",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -306,6 +306,51 @@
                                     "items": {
                                         "$ref": "#/components/schemas/TerminoloskiKandidat"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/izlusciAsync": {
+            "post": {
+                "tags": [
+                    "extract"
+                ],
+                "summary": "Izlusci terminološke kandidate iz seznama besedil v conllu obliki [asinhrono, ustvari novi job]",
+                "operationId": "getCandidates_async",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "conllus": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "prepovedaneBesede": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
                                 }
                             }
                         }
