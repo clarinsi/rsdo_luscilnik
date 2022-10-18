@@ -73,3 +73,5 @@ gen/
 swagger_server/requets_db/dbs/*
 
 .env
+
+classla/classla_resources
