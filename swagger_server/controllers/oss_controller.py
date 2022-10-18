@@ -1,4 +1,4 @@
-from swagger_server import db_utils
+from swagger_server.utils import db_utils
 from swagger_server import util
 from flask import send_file
 

@@ -2,8 +2,6 @@ import mariadb
 import os
 import sys
 
-
-
 database_info = {
     'database': os.environ.get("MDB_DATABASE", default="true"),
     'host': os.environ.get("MDB_HOST", default="true"),
@@ -14,21 +12,21 @@ database_info = {
 
 cur = None
 
+
 # Connect to MariaDB Platform
 
 
 def get_files_by_udc(udc):
-   ret = []
+    ret = []
 
-   try:
+    try:
         conn = mariadb.connect(**database_info)
         cur = conn.cursor()
-        #cur.execute(f'SELECT * from os2022_ngrams WHERE file_id = {file_id}')
-        #cur.execute(f'SELECT COUNT(*) FROM os2022_ngrams')
-        #ret = list(cur)
+        # cur.execute(f'SELECT * from os2022_ngrams WHERE file_id = {file_id}')
+        # cur.execute(f'SELECT COUNT(*) FROM os2022_ngrams')
+        # ret = list(cur)
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
-    
 
     return ret
 
