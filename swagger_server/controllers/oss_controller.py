@@ -1,4 +1,4 @@
-from swagger_server import db_utils
+from swagger_server.utils import db_utils
 from swagger_server import util
 from flask import send_file
 
@@ -27,7 +27,7 @@ def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     return ' '.join(files), 200
 
 
-def get_extracted_words(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
+def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
     """Vrne terminloške kandidate glede na 
 
      # noqa: E501
@@ -70,7 +70,7 @@ def get_files(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     return ' '.join(files), 200
 
 
-def get_number_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
+def get_number_texts(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
     """Vrne število besedil glede na iskalne pogoje
 
      # noqa: E501
@@ -86,9 +86,10 @@ def get_number_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
 
     :rtype: int
     """
-    if not kljucnebesede:
-        return "Manjkajo kljucne besede", 400
-    files = db_utils.get_files_by_udc(kljucnebesede)
+    #if not kljucnebesede:
+    #    return "Manjkajo kljucne besede", 400
+
+    files = db_utils.vrni_oss_dokumente(leta, vrste, kljucnebesede, udk)
     return len(files), 200
 
 

@@ -293,7 +293,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -303,25 +303,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -329,6 +311,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -364,7 +364,8 @@ paths:
         schema:
           type: array
           items:
-            type: string
+            type: integer
+            format: int64
       - name: kljucnebesede
         in: query
         required: true
@@ -374,7 +375,7 @@ paths:
           type: array
           items:
             type: string
-      - name: cerifpodrocja
+      - name: udk
         in: query
         required: true
         style: form
@@ -382,8 +383,7 @@ paths:
         schema:
           type: array
           items:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: OK

@@ -43,7 +43,7 @@ class Job(BaseModel):
     input_file = TextField(index=True, null=True)
 
 
-# db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
+db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
 db.create_tables([Job])
 
 
