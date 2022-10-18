@@ -12,10 +12,10 @@ from swagger_server.util import get_random_filename, create_random_file_in_tmp_f
 import requests
 from werkzeug.utils import secure_filename
 
-ATEapi_endpoint = "http://localhost:5000/predict"
+# ATEapi_endpoint = "http://localhost:5000/predict"
 
 
-# ATEapi_endpoint = "http://ate-api:5000/predict"
+ATEapi_endpoint = "http://ate-api:5000/predict"
 
 
 def do_izlusci(conllus, prepovedane_besede):
