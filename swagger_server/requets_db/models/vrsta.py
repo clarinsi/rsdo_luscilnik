@@ -43,7 +43,7 @@ class Job(BaseModel):
     input_file = TextField(index=True, null=True)
 
 
-db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
+# db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
 db.create_tables([Job])
 
 
@@ -60,7 +60,7 @@ class JobManager:
         :return: Job object, Did already exist boolean
         """
         try:
-            if job_type == 2:
+            if job_type in [2, 4]:
                 job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
             elif job_type in [1, 3, 12, 32]:
                 tmp_file = ""

@@ -1,9 +1,12 @@
 import datetime
+import json
 import os.path
 
 import peewee
 import asyncio
 import concurrent.futures as cf
+
+from swagger_server.controllers.extract_controller import do_izlusci
 from swagger_server.models.job_response import JobResponse  # noqa: E501
 from swagger_server.requets_db.models.vrsta import (Job)
 from threading import Thread
@@ -14,10 +17,12 @@ import threading
 import time
 
 CLASSLA_CONCURANCE_LIMIT = 3
-DOC2TEXT_CONCURANCE_LIMIT = 4
+DOC2TEXT_CONCURANCE_LIMIT = 3
+ATEAPI_CONCURANCE_LIMIT = 2
 
 classla_sem = threading.Semaphore(CLASSLA_CONCURANCE_LIMIT)
 doc2text_sem = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT)
+ateapi_sem = threading.Semaphore(ATEAPI_CONCURANCE_LIMIT)
 
 
 def delete_job(job_id):  # noqa: E501
@@ -69,9 +74,26 @@ def clear_up_unfinished_jobs():
 
 
 async def try_do_jobs():
-    with cf.ThreadPoolExecutor(max_workers=2) as ex:
+    with cf.ThreadPoolExecutor(max_workers=3) as ex:
         ex.submit(try_do_jobs_classla)
         ex.submit(try_do_jobs_doc2text)
+        ex.submit(try_do_jobs_ateapi)
+
+
+### Job looping
+def try_do_jobs_ateapi():
+    while True:
+        try:
+            if ateapi_sem._value > 0:
+                unfinished_jobs = Job.select() \
+                    .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 4) \
+                    .limit(ateapi_sem._value)
+                with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT) as ex:
+                    [ex.submit(execute_ateapi_job, job) for job in unfinished_jobs]
+        except Exception as e:
+            print(f"Exception in try_do_jobs_ateapi")
+        finally:
+            time.sleep(3)
 
 
 ### Job looping
@@ -178,6 +200,20 @@ def execute_classla_job(job: Job):
         job.save()
     finally:
         classla_sem.release()
+
+
+def execute_ateapi_job(job: Job):
+    try:
+        ateapi_sem.acquire()
+        job.started_on = datetime.datetime.utcnow()
+        job.save()
+        info = json.loads(job.job_input)
+        ret_json, _ = do_izlusci(info['conllus'], info['prepovedane_besede'])
+        job.job_output = ret_json
+        job.finished_on = datetime.datetime.utcnow()
+        job.save()
+    finally:
+        ateapi_sem.release()
 
 
 clear_up_unfinished_jobs()
