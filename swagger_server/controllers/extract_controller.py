@@ -2,7 +2,7 @@ import connexion
 import json
 from pathlib import Path
 from swagger_server.models.izlusci_body import IzlusciBody  # noqa: E501
-from swagger_server.classla import cl_utils
+from swagger_server.utils import cl_utils
 import requests
 
 # ATEapi_endpoint = "http://localhost:5000/predict"

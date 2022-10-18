@@ -1,4 +1,4 @@
-from swagger_server.classla import cl_utils
+from swagger_server.utils import cl_utils
 from swagger_server.utils import txt_utils
 
 
@@ -38,6 +38,7 @@ def datoteka_v_besedilo_sync_post(file=None):  # noqa: E501
     try:
         return txt_utils.extract_text_prepResp(file)
     except Exception as e:
+        print(e)
         return str(e), 500
 
 

@@ -8,7 +8,7 @@ services:
       - "8080:8080"
     volumes: # when pushing to server, remove the first dot here in front of /mnt
       - /mnt/ssd/ds_ftp/classla_OS2022:/usr/src/app/classla_OS2022
-      - ./swagger_server/classla/classla_resources:/root/classla_resources
+      - ../classla/classla_resources:/root/classla_resources
     environment:
       - PYTHONUNBUFFERED=1
   tika2:
@@ -20,7 +20,7 @@ services:
   ate-api:
     build: ./ATEapi
     restart: always
-    ports:
-      - "5000:5000"
+ #   ports:
+    #  - "5000:5000"
     volumes:
-      - ./swagger_server/classla/classla_resources:/home/appuser/classla_resources
+      - ../classla/classla_resources:/home/appuser/classla_resources

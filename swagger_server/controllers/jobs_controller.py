@@ -7,7 +7,7 @@ import concurrent.futures as cf
 from swagger_server.models.job_response import JobResponse  # noqa: E501
 from swagger_server.requets_db.models.vrsta import (Job)
 from threading import Thread
-from swagger_server.classla import cl_utils
+from swagger_server.utils import cl_utils
 from swagger_server.utils import txt_utils
 from werkzeug.datastructures import FileStorage
 import threading

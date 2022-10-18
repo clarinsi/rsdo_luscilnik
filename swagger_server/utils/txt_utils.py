@@ -5,7 +5,7 @@ import requests
 import docx
 import xml.etree.ElementTree as ET
 from PyPDF2 import PdfReader
-from swagger_server.classla import cl_utils
+from swagger_server.utils import cl_utils
 import cv2
 import numpy as np
 import magic
@@ -22,7 +22,7 @@ def extract_text_prepResp(file, content_type=""):
         content_type = magic.from_file(file.stream.name, mime=True)
 
     if tika_responding():
-        response = requests.put(tika_server, data=file)
+        response = requests.put(tika_server, data=file, headers={"Accept": "text/plain; charset=UTF-8"})
         return response.text, 200
     if "openxmlformats-officedocument.wordprocessingml.document" in content_type:
         content = '\n'.join([p.text for p in docx.Document(file).paragraphs])
@@ -46,7 +46,7 @@ def extract_text_prepResp(file, content_type=""):
 def ocr_text_prepResp(file):
     if tika_responding():
         response = requests.put(tika_server, data=file,
-                                headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng"})
+                                headers={"X-Tika-PDFOcrStrategy": "ocr_only", "X-Tika-OCRLanguage": "slv+eng","Accept": "text/plain; charset=UTF-8"})
         return response.text, 200
 
     win_p = "C:/Program Files/Tesseract-OCR/tesseract.exe"
