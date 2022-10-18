@@ -1,6 +1,7 @@
 import datetime
 import json
 import os.path
+import traceback
 
 import peewee
 import asyncio
@@ -92,6 +93,7 @@ def try_do_jobs_ateapi():
                     [ex.submit(execute_ateapi_job, job) for job in unfinished_jobs]
         except Exception as e:
             print(f"Exception in try_do_jobs_ateapi")
+            traceback.print_exc()
         finally:
             time.sleep(3)
 
@@ -120,6 +122,7 @@ def try_do_jobs_classla():
 
         except Exception as e:
             print(f"Exception in try_do_jobs_classla")
+            traceback.print_exc()
         finally:
             time.sleep(3)
 
@@ -136,6 +139,7 @@ def try_do_jobs_doc2text():
                     [ex.submit(execute_doc2text_job, job) for job in unfinished_jobs]
         except Exception as e:
             print(f"Exception in try_do_jobs_doc2text")
+            traceback.print_exc()
         finally:
             time.sleep(3)
 
@@ -163,9 +167,9 @@ def execute_doc2text_job(job: Job):
             jtype = job.job_type
             text = ""
             if jtype in [1, 12]:
-                text = txt_utils.extract_text_prepResp(file)
+                text, _ = txt_utils.extract_text_prepResp(file)
             elif jtype in [3, 32]:
-                text = txt_utils.ocr_text_prepResp(file)
+                text, _ = txt_utils.ocr_text_prepResp(file)
 
             if jtype in [1, 3]:
                 job.job_output = text
