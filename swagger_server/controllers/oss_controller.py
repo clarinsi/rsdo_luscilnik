@@ -1,3 +1,4 @@
+from swagger_server import db_utils
 from swagger_server import util
 from flask import send_file
 
@@ -20,7 +21,7 @@ def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     """
     if not kljucnebesede:
         return "Manjkajo kljucne besede", 400
-    files = util.get_files_by_keywords(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucnebesede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200
@@ -63,7 +64,7 @@ def get_files(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     """
     if not kljucnebesede:
         return "Manjkajo kljucne besede", 400
-    files = util.get_files_by_keywords(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucnebesede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200
@@ -81,13 +82,13 @@ def get_number_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     :param kljucnebesede: 
     :type kljucnebesede: List[str]
     :param cerifpodrocja: 
-    :type cerifpodrocja: List[int]
+    :type udc: List[int]
 
     :rtype: int
     """
     if not kljucnebesede:
         return "Manjkajo kljucne besede", 400
-    files = util.get_files_by_keywords(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucnebesede)
     return len(files), 200
 
 
@@ -109,7 +110,7 @@ def get_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     """
     if not kljucnebesede:
         return "Manjkajo kljucne besede", 400
-    files = util.get_files_by_keywords(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucnebesede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200

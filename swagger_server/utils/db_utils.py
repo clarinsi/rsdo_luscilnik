@@ -1,26 +1,36 @@
 import mariadb
+import os
 import sys
-from decouple import config
+
 
 
 database_info = {
-    'database': config('MDB_DATABASE'),
-    'host': config('MDB_HOST'),
-    'port': config('MDB_PORT', cast=int),
-    'user': config('MDB_USER'),
-    'password': config('MDB_PASSWORD')
+    'database': os.environ.get("MDB_DATABASE", default="true"),
+    'host': os.environ.get("MDB_HOST", default="true"),
+    'port': os.environ.get("MDB_PORT", default="true"),
+    'user': os.environ.get("MDB_USER", default="true"),
+    'password': os.environ.get("MDB_PASSWORD", default="true"),
 }
 
 cur = None
 
 # Connect to MariaDB Platform
-try:
-    conn = mariadb.connect(**database_info)
-    # Get cursor
-    cur = conn.cursor()
-except mariadb.Error as e:
-    print(f"Error connecting to MariaDB Platform: {e}")
-    # sys.exit(1)
+
+
+def get_files_by_udc(udc):
+   ret = []
+
+   try:
+        conn = mariadb.connect(**database_info)
+        cur = conn.cursor()
+        #cur.execute(f'SELECT * from os2022_ngrams WHERE file_id = {file_id}')
+        #cur.execute(f'SELECT COUNT(*) FROM os2022_ngrams')
+        #ret = list(cur)
+    except mariadb.Error as e:
+        print(f"Error connecting to MariaDB Platform: {e}")
+    
+
+    return ret
 
 
 # class BaseModel(Model):
