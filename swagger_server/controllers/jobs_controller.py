@@ -97,7 +97,7 @@ def try_do_jobs_classla():
                         [ex.submit(execute_classla_job, job) for job in unfinished_jobs]
 
         except Exception as e:
-            print(f"Exception in {__name__}: {e}")
+            print(f"Exception in try_do_jobs_classla")
         finally:
             time.sleep(3)
 
@@ -113,7 +113,7 @@ def try_do_jobs_doc2text():
                 with cf.ThreadPoolExecutor(max_workers=DOC2TEXT_CONCURANCE_LIMIT) as ex:
                     [ex.submit(execute_doc2text_job, job) for job in unfinished_jobs]
         except Exception as e:
-            print(f"Exception in {__name__}: {e}")
+            print(f"Exception in try_do_jobs_doc2text")
         finally:
             time.sleep(3)
 

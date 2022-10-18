@@ -1,0 +1,4 @@
+__pycache__/
+.DS_Store
+.vscode/
+model/term_extractor/pytorch_model.bin
