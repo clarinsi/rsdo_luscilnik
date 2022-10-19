@@ -348,7 +348,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -358,7 +358,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -368,7 +368,7 @@ paths:
             format: int64
       - name: kljucnebesede
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -377,7 +377,7 @@ paths:
             type: string
       - name: udk
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:

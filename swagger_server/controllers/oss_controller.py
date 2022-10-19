@@ -43,7 +43,9 @@ def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  #
 
     :rtype: List[TerminoloskiKandidat]
     """
-    return 'do some magic!5'
+    files = db_utils.vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk)
+    return files, 200
+
 
 
 def get_files(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501

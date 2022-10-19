@@ -11,7 +11,7 @@ services:
       - ../classla/classla_resources:/root/classla_resources
     environment:
       - PYTHONUNBUFFERED=1
-      - MDB_DATABASE=corpus_120k
+      - MDB_DATABASE=conllus_150k
       - MDB_HOST=164.8.252.72
       - MDB_PORT=3306
       - MDB_USER=rsdo5
