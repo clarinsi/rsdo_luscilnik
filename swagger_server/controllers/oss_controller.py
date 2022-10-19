@@ -1,3 +1,8 @@
+import json
+
+import connexion
+
+from swagger_server.requets_db.models.vrsta import JobManager
 from swagger_server.utils import db_utils
 from swagger_server import util
 from flask import send_file
@@ -43,8 +48,8 @@ def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  #
 
     :rtype: List[TerminoloskiKandidat]
     """
-    files = db_utils.vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk)
-    return files, 200
+    terKand = db_utils.vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk)
+    return terKand, 200
 
 
 def get_extracted_words_async(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
@@ -63,7 +68,12 @@ def get_extracted_words_async(leta=None, vrste=None, kljucnebesede=None, udk=Non
 
     :rtype: str
     """
-    return 'do some magic!'
+    job, is_old_job = JobManager.create_job(5, json.dumps(
+        {'leta': leta, 'vrste': vrste, 'kljucnebesede': kljucnebesede, 'udk': udk}))
+    if job is None:
+        return "Something went wrong", 500
+    ret = {'check_job_url': f'{connexion.request.url_root}/job/{job.id}'}
+    return ret, 200
 
 
 def get_files(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501

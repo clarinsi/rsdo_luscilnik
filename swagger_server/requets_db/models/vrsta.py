@@ -43,7 +43,7 @@ class Job(BaseModel):
     input_file = TextField(index=True, null=True)
 
 
-db.drop_tables([Job])  # TODO: After pushing this, comment it and push again
+# db.drop_tables([Job])  If pushing this uncommented, comment it and push again
 db.create_tables([Job])
 
 
@@ -55,12 +55,13 @@ class JobManager:
         :possibilities:
         # 1 = pretvori datoteko v besedilo, 2 = oznaci besedilo, 12 = oboje
         # 3 = pretvori dat v besedilo OCR, 2 = oznaci besedilo, 32 = oboje
-        # 4 = izlusci async
+        # 4 = izlusci async glede na vhodne conlluje
+        # 5 = izlusci po iskanju async
 
         :return: Job object, Did already exist boolean
         """
         try:
-            if job_type in [2, 4]:
+            if job_type in [2, 4, 5]:
                 job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
             elif job_type in [1, 3, 12, 32]:
                 tmp_file = ""
