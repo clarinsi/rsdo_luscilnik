@@ -74,7 +74,7 @@ def vrni_oss_dokumente(leta, vrste, kljucnebesede, udk):
             params=params+kljucnebesede
 
         if(where):
-            sql=sql+" where " + where
+            sql=sql+" where " + where + ";"
         
         print(sql)
         print(params)
@@ -137,8 +137,8 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
         print(sql)
         print(params)
 
-        sqltk=f"""Select ngram,upos,avg(tfidf) as tfidf from (
-                    SELECT tf.ngram, tf.upos,(0.5+0.5*(tf.tf/d.maxtf))*log(152000/df.df)*(-1*log(1-((dff.df)/(1+df.df)))) as tfidf
+        sqltk=f"""Select ngram,upos,avg(tfidf) as tfidf, sum(tf) as tf from (
+                    SELECT tf.ngram, tf.upos,(0.5+0.5*(tf.tf/d.maxtf))*log(152000/df.df)*(-1*log(1-((dff.df)/(1+df.df)))) as tfidf, tf.tf as tf
                     FROM ngrams_upos_tf tf, documents d,
                         (
                         Select ngram, upos, count(*) as df from ngrams_upos_tf TF
@@ -153,13 +153,30 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
                     ) X
                     group by ngram,upos
                     order by tfidf desc
-                    limit 100"""
-        
+                    limit 1000;"""
+                    #
         print (sqltk)
         
         cur.execute(sqltk,params)
         
-        ret = list(cur)
+        #ret = list(cur)
+
+
+        ret = {'terminoloski_kandidati': [
+            {
+                'POSoznake': upos,
+                'kandidat': ngram,  # more to bit lemma al terms?
+                'kanonicnaoblika': ngram,
+                'ranking': tfidf,
+                'podporneutezi': [
+                    0.0,  # ????????
+                    0.0  # ??????
+                ],
+                'pogostostpojavljanja': [tf, 0]  # ???????
+            }
+            for upos,ngram,tfidf,tf in cur 
+        ]}
+            
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
     
