@@ -524,7 +524,7 @@
                     {
                         "name": "leta",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -536,18 +536,19 @@
                     {
                         "name": "vrste",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer",
+                                "format": "int64"
                             }
                         }
                     },
                     {
                         "name": "kljucnebesede",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -556,14 +557,13 @@
                         }
                     },
                     {
-                        "name": "cerifpodrocja",
+                        "name": "udk",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer",
-                                "format": "int64"
+                                "type": "string"
                             }
                         }
                     }
@@ -588,13 +588,13 @@
                 "tags": [
                     "oss"
                 ],
-                "summary": "Vrne terminloške kandidate glede na ",
+                "summary": "Vrne terminloške kandidate glede na ... (sync)",
                 "operationId": "getExtractedWords",
                 "parameters": [
                     {
                         "name": "leta",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -606,18 +606,19 @@
                     {
                         "name": "vrste",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer",
+                                "format": "int64"
                             }
                         }
                     },
                     {
                         "name": "kljucnebesede",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -626,14 +627,13 @@
                         }
                     },
                     {
-                        "name": "cerifpodrocja",
+                        "name": "udk",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer",
-                                "format": "int64"
+                                "type": "string"
                             }
                         }
                     }
@@ -655,18 +655,18 @@
                 }
             }
         },
-        "/oss/datotekePoIskanju": {
+        "/oss/izlusciPoIskanjuAsync": {
             "get": {
                 "tags": [
                     "oss"
                 ],
-                "summary": "Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje",
-                "operationId": "getFiles",
+                "summary": "Vrne terminloške kandidate glede na ... (async)",
+                "operationId": "getExtractedWordsAsync",
                 "parameters": [
                     {
                         "name": "leta",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -678,18 +678,19 @@
                     {
                         "name": "vrste",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer",
+                                "format": "int64"
                             }
                         }
                     },
                     {
                         "name": "kljucnebesede",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -698,14 +699,82 @@
                         }
                     },
                     {
-                        "name": "cerifpodrocja",
+                        "name": "udk",
                         "in": "query",
-                        "required": true,
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oss/datotekePoIskanju": {
+            "get": {
+                "tags": [
+                    "oss"
+                ],
+                "summary": "Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje",
+                "operationId": "getFiles",
+                "parameters": [
+                    {
+                        "name": "leta",
+                        "in": "query",
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
                                 "type": "integer",
                                 "format": "int64"
+                            }
+                        }
+                    },
+                    {
+                        "name": "vrste",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "format": "int64"
+                            }
+                        }
+                    },
+                    {
+                        "name": "kljucnebesede",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "udk",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
                             }
                         }
                     }
@@ -778,7 +847,7 @@
                     {
                         "name": "leta",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -790,18 +859,19 @@
                     {
                         "name": "vrste",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer",
+                                "format": "int64"
                             }
                         }
                     },
                     {
                         "name": "kljucnebesede",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -810,14 +880,13 @@
                         }
                     },
                     {
-                        "name": "cerifpodrocja",
+                        "name": "udk",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer",
-                                "format": "int64"
+                                "type": "string"
                             }
                         }
                     }
@@ -913,7 +982,7 @@
                     {
                         "name": "leta",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -925,18 +994,19 @@
                     {
                         "name": "vrste",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer",
+                                "format": "int64"
                             }
                         }
                     },
                     {
                         "name": "kljucnebesede",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
@@ -945,14 +1015,13 @@
                         }
                     },
                     {
-                        "name": "cerifpodrocja",
+                        "name": "udk",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer",
-                                "format": "int64"
+                                "type": "string"
                             }
                         }
                     }

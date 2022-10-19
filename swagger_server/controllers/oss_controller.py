@@ -3,19 +3,19 @@ from swagger_server import util
 from flask import send_file
 
 
-def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
-    """Vrne seznam CoNNL-U-jev glede na iskalne pogoje
+def get_conllus(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+    """"Vrne seznam CoNNL-U-jev glede na iskalne pogoje
 
      # noqa: E501
 
-    :param leta: 
+    :param leta:
     :type leta: List[int]
-    :param vrste: 
-    :type vrste: List[str]
-    :param kljucnebesede: 
+    :param vrste:
+    :type vrste: List[int]
+    :param kljucnebesede:
     :type kljucnebesede: List[str]
-    :param cerifpodrocja: 
-    :type cerifpodrocja: List[int]
+    :param udk:
+    :type udk: List[str]
 
     :rtype: List[str]
     """
@@ -28,18 +28,18 @@ def get_conllus(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
 
 
 def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
-    """Vrne terminloške kandidate glede na 
+    """Vrne terminloške kandidate glede na ... (sync)
 
      # noqa: E501
 
-    :param leta: 
+    :param leta:
     :type leta: List[int]
-    :param vrste: 
-    :type vrste: List[str]
-    :param kljucnebesede: 
+    :param vrste:
+    :type vrste: List[int]
+    :param kljucnebesede:
     :type kljucnebesede: List[str]
-    :param cerifpodrocja: 
-    :type cerifpodrocja: List[int]
+    :param udk:
+    :type udk: List[str]
 
     :rtype: List[TerminoloskiKandidat]
     """
@@ -47,8 +47,26 @@ def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  #
     return files, 200
 
 
+def get_extracted_words_async(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+    """Vrne terminloške kandidate glede na ... (async)
 
-def get_files(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
+     # noqa: E501
+
+    :param leta:
+    :type leta: List[int]
+    :param vrste:
+    :type vrste: List[int]
+    :param kljucnebesede:
+    :type kljucnebesede: List[str]
+    :param udk:
+    :type udk: List[str]
+
+    :rtype: str
+    """
+    return 'do some magic!'
+
+
+def get_files(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
     """Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje
 
      # noqa: E501
@@ -56,13 +74,13 @@ def get_files(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     :param leta: 
     :type leta: List[int]
     :param vrste: 
-    :type vrste: List[str]
-    :param kljucnebesede: 
+    :type vrste: List[int]
+    :param kljucnebesede:
     :type kljucnebesede: List[str]
-    :param cerifpodrocja: 
-    :type cerifpodrocja: List[int]
+    :param udk:
+    :type udk: List[str]
 
-    :rtype: List[List[bytearray]]
+    :rtype: str
     """
     if not kljucnebesede:
         return "Manjkajo kljucne besede", 400
@@ -80,15 +98,15 @@ def get_number_texts(leta=None, vrste=None, kljucnebesede=None, udk=None):  # no
     :param leta: 
     :type leta: List[int]
     :param vrste: 
-    :type vrste: List[str]
-    :param kljucnebesede: 
+    :type vrste: List[int]
+    :param kljucnebesede:
     :type kljucnebesede: List[str]
-    :param cerifpodrocja: 
-    :type udc: List[int]
+    :param udk:
+    :type udk: List[str]
 
     :rtype: int
     """
-    #if not kljucnebesede:
+    # if not kljucnebesede:
     #    return "Manjkajo kljucne besede", 400
 
     files = db_utils.vrni_oss_dokumente(leta, vrste, kljucnebesede, udk)
@@ -103,11 +121,11 @@ def get_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
     :param leta: 
     :type leta: List[int]
     :param vrste: 
-    :type vrste: List[str]
-    :param kljucnebesede: 
+    :type vrste: List[int]
+    :param kljucnebesede:
     :type kljucnebesede: List[str]
-    :param cerifpodrocja: 
-    :type cerifpodrocja: List[int]
+    :param udk:
+    :type udk: List[str]
 
     :rtype: List[str]
     """
@@ -163,7 +181,7 @@ def oss_besedilo_po_id_get(file_id):  # noqa: E501
     """
     try:
         f = util.get_original_file_path_by_id(file_id)
-        print(f) # for debugging purposes on the server, delete this later
+        print(f)  # for debugging purposes on the server, delete this later
         return send_file(util.get_original_file_path_by_id(file_id), download_name=f'{file_id}.xml')
     except FileNotFoundError as e:
         return "The file with this ID doesn't exist.", 404

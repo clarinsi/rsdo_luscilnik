@@ -343,7 +343,7 @@ paths:
     get:
       tags:
       - oss
-      summary: 'Vrne terminloške kandidate glede na '
+      summary: Vrne terminloške kandidate glede na ... (sync)
       operationId: get_extracted_words
       parameters:
       - name: leta
@@ -393,6 +393,60 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_controller
+  /oss/izlusciPoIskanjuAsync:
+    get:
+      tags:
+      - oss
+      summary: Vrne terminloške kandidate glede na ... (async)
+      operationId: get_extracted_words_async
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
   /oss/datotekePoIskanju:
@@ -491,7 +545,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -501,25 +555,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -527,6 +563,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -595,7 +649,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -605,25 +659,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -631,6 +667,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
