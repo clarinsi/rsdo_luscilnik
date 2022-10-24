@@ -60,7 +60,7 @@ def do_izlusci(conllus, prepovedane_besede):
             ]}
         except:
             return Response(data, 400)
-        return Response(ret, 200)
+        return ret, 200
     except Exception as e:
         return Response(str(e), 500)
 

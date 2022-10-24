@@ -258,19 +258,22 @@ def execute_ateapi_job(job: Job):
         job.save()
         info = json.loads(job.job_input)
         _res = do_izlusci(info['conllus'], info['prepovedane_besede'])
-        try:
-            if type(_res.response) is dict:
-                ret_json = str(_res.response)
-            else:
-                try:
-                    ret_json = _res.response[0].decode('utf-8')
-                except:
-                    ret_json = "Unknown exception."
+        if type(_res) is tuple:
+            ret_json = _res[0]
+        else:
+            try:
+                if type(_res.response) is dict:
+                    ret_json = str(_res.response)
+                else:
+                    try:
+                        ret_json = _res.response[0].decode('utf-8')
+                    except:
+                        ret_json = "Unknown exception."
 
-            if _res.status_code != 200:
-                ret_json = f'ERROR - {ret_json}'
-        except:
-            ret_json = "ERROR - Unknown exception."
+                if _res.status_code != 200:
+                    ret_json = f'ERROR - {ret_json}'
+            except:
+                ret_json = "ERROR - Unknown exception."
         job.job_output = ret_json
         job.finished_on = datetime.datetime.utcnow()
         job.save()
