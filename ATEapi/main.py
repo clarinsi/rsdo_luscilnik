@@ -36,30 +36,33 @@ def predict():
         final_preds.append(p)
         final_probs.append(p1)
     predicted_terms, prob_terms, lemma_terms, pos_terms, msd_terms = extract_terms_full(final_preds, final_probs, texts, lemma, pos, msd)
-    df = pd.DataFrame({'terms':predicted_terms,
-                    'raw_prob':prob_terms,
-                    'lemma':lemma_terms,
-                    'pos':pos_terms,
-                    'msd':msd_terms})
-    df = df.drop_duplicates(subset=['lemma','pos'], keep='first')
-    # print(df.head(5))
-    df['prob'] = pd.Series(dtype='float')
-    for i in range(len(df)):
-        temp = [float(x) for x in df['raw_prob'].iloc[i].split(' ')]
-        df['prob'].iloc[i] = round(sum(temp)/len(temp),4)
+    if len(predicted_terms) == 0:
+        return jsonify({'term_example_occurrence': 'No terms found'})
+    else:
+        df = pd.DataFrame({'term_example_occurrence':predicted_terms,
+                        'raw_prob':prob_terms,
+                        'lemma':lemma_terms,
+                        'term_example_pos':pos_terms,
+                        'term_example_msd':msd_terms})
+        df = df.drop_duplicates(subset=['lemma','term_example_pos'], keep='first')
+        
+        df['ranking'] = pd.Series(dtype='float')
+        for i in range(len(df)):
+            temp = [float(x) for x in df['raw_prob'].iloc[i].split(' ')]
+            df['ranking'].iloc[i] = round(sum(temp)/len(temp),4)
 
-    df = df.sort_values(by=['lemma','prob'], ascending=True)
-    df = df.drop_duplicates(subset=['lemma'], keep='last')
-    df['canonical'] = process(df['terms'])
-    df = df[['terms', 'canonical', 'lemma','pos','msd','prob']].rename(columns={'prob':'ranking'})
-    # sort by ranking 
-    # print(df.head(5))
-    df = df[df['pos'] != 'PUNCT']
-    df = df.query("terms.str.len() > 2")
-    df = df.sort_values('ranking', ascending=False).drop_duplicates(subset=['terms','lemma'], keep = 'first').sort_index()
-    print(df.head(5))
-    return df.to_json(orient='records')
-    # return jsonify(df.to_dict(orient='records'))
+        df = df.sort_values(by=['lemma','ranking'], ascending=True)
+        df = df.drop_duplicates(subset=['lemma'], keep='last')
+        df['canonical'] = process(df['term_example_occurrence']) 
+        corpus = ' '.join([' '.join(x) for x in lemma])
+        df['frequency'] = [corpus.count(x) for x in df['lemma']]
+        df = df[[ 'lemma', 'canonical', 'frequency','ranking','term_example_occurrence', 'term_example_pos','term_example_msd']]
+        df = df[df['term_example_pos'] != 'PUNCT']
+        df = df.query("term_example_occurrence.str.len() > 2")
+        df = df.drop_duplicates(subset=['term_example_occurrence','lemma'], keep = 'first')
+        df = df.sort_values(by=['ranking'], ascending=False)
+        # print(df.head(5))
+        return df.to_json(orient='records')
 
 
 if __name__ == '__main__':

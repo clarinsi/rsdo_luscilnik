@@ -1,6 +1,6 @@
 import os
 import classla
-# classla.download('sl', logging_level='WARNING')
+classla.download('sl', logging_level='WARNING')
 
 from lemmagen3 import Lemmatizer
 
