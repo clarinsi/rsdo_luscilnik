@@ -6,7 +6,7 @@ import traceback
 import peewee
 import asyncio
 import concurrent.futures as cf
-
+from flask import Response
 from swagger_server.controllers.extract_controller import do_izlusci
 from swagger_server.models.job_response import JobResponse  # noqa: E501
 from swagger_server.requets_db.models.vrsta import (Job)
@@ -27,6 +27,8 @@ doc2text_sem = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT)
 ateapi_sem = threading.Semaphore(ATEAPI_CONCURANCE_LIMIT)
 izluscipoiskanju_sem = threading.Semaphore(IZLUSCI_PO_ISKANJU_CONCURANCE_LIMIT)
 
+running_threads = {}
+
 
 def delete_job(job_id):  # noqa: E501
     """Izbriše job
@@ -38,7 +40,14 @@ def delete_job(job_id):  # noqa: E501
 
     :rtype: str
     """
-    return 'Endpoint currently disabled'
+    try:
+        job = Job.get_by_id(job_id)
+        if job.started_on is not None and job.finished_on is None:
+            return Response("Cancelling ongoing jobs currently not implemented.", 400)
+        job.delete_instance()
+        return f"Job with the ID {job_id} was removed."
+    except peewee.DoesNotExist:
+        return Response("Job with this ID does not exist", 404)
 
 
 def get_job_status(job_id):  # noqa: E501
@@ -58,8 +67,13 @@ def get_job_status(job_id):  # noqa: E501
         if job.started_on is not None and job.finished_on is None:
             return JobResponse(job_status="currently processing", created_on=job.created_on,
                                started_on=job.started_on), 200
-        if job.started_on is not None and job.finished_on is not None:
-            return JobResponse(job_status="finished processing", created_on=job.created_on, started_on=job.started_on,
+        if job.started_on is not None and job.finished_on is not None and not job.job_output.startswith("ERROR -"):
+            return JobResponse(job_status="finished processing (OK)", created_on=job.created_on,
+                               started_on=job.started_on,
+                               finished_on=job.finished_on, job_result=job.job_output), 200
+        if job.started_on is not None and job.finished_on is not None and job.job_output.startswith("ERROR -"):
+            return JobResponse(job_status="finished processing (ERROR)", created_on=job.created_on,
+                               started_on=job.started_on,
                                finished_on=job.finished_on, job_result=job.job_output), 200
     except peewee.DoesNotExist:
         return "Job with this ID does not exist", 404
@@ -110,7 +124,18 @@ def try_do_jobs_ateapi():
                     .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 4) \
                     .limit(ateapi_sem._value)
                 with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT) as ex:
-                    [ex.submit(execute_ateapi_job, job) for job in unfinished_jobs]
+                    # [ex.submit(execute_ateapi_job, job) for job in unfinished_jobs]
+                    with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT) as ex:
+                        for job in unfinished_jobs:
+                            ex.submit(execute_ateapi_job, job)
+                            # sub = ex.submit(execute_ateapi_job, job)
+                            # running_threads[job.id] = sub
+                            # time.sleep(1)
+                            # running_threads[job.id]
+                            # preveri ce je done: ```running_threads[job.id].done()``` (vrne true false)
+
+                            # was_canceled = running_threads[job.id].cancel()
+                            # Todo: Mogoce kaksna druga opcija? Ampak verjetno ne, ne vidim (še?) kak prekicat ONGOING job
         except Exception as e:
             print(f"Exception in try_do_jobs_ateapi")
             traceback.print_exc()
@@ -232,7 +257,20 @@ def execute_ateapi_job(job: Job):
         job.started_on = datetime.datetime.utcnow()
         job.save()
         info = json.loads(job.job_input)
-        ret_json, _ = do_izlusci(info['conllus'], info['prepovedane_besede'])
+        _res = do_izlusci(info['conllus'], info['prepovedane_besede'])
+        try:
+            if type(_res.response) is dict:
+                ret_json = str(_res.response)
+            else:
+                try:
+                    ret_json = _res.response[0].decode('utf-8')
+                except:
+                    ret_json = "Unknown exception."
+
+            if _res.status_code != 200:
+                ret_json = f'ERROR - {ret_json}'
+        except:
+            ret_json = "ERROR - Unknown exception."
         job.job_output = ret_json
         job.finished_on = datetime.datetime.utcnow()
         job.save()

@@ -1083,7 +1083,7 @@
                 "properties": {
                     "job_status": {
                         "type": "string",
-                        "enum": ["waiting in que", "currently processing", "finished processing"]
+                        "enum": ["waiting in que", "currently processing", "finished processing (OK)", "finished processing (ERROR)"]
                     },
                     "finished_on": {
                         "type": "string",

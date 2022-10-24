@@ -78,7 +78,7 @@ class JobResponse(Model):
         :param job_status: The job_status of this JobResponse.
         :type job_status: str
         """
-        allowed_values = ["waiting in que", "currently processing", "finished processing"]  # noqa: E501
+        allowed_values = ["waiting in que", "currently processing", "finished processing (OK)", "finished processing (ERROR)"]  # noqa: E501
         if job_status not in allowed_values:
             raise ValueError(
                 "Invalid value for `job_status` ({0}), must be one of {1}"

@@ -741,7 +741,8 @@ components:
           enum:
           - waiting in que
           - currently processing
-          - finished processing
+          - finished processing (OK)
+          - finished processing (ERROR)
         finished_on:
           type: string
           format: date-time

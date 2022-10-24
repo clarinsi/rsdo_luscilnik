@@ -1,6 +1,6 @@
 import codecs
 import os
-
+from flask import Response
 import connexion
 import json
 from pathlib import Path
@@ -29,28 +29,40 @@ def do_izlusci(conllus, prepovedane_besede):
                 ('file', ('temp_1.conllu', fp, 'application/octet-stream'))
             ]
             res = requests.post(ATEapi_endpoint, files=files)
-            data = json.loads(res.text)
+            try:
+                data = json.loads(res.text)
+            except:
+                data = "ATEapi error"
+        except Exception as e:
+            return Response(f"Exception in izlusci ({str(e)})", 500)
         finally:
             fp.close()
             os.remove(tmp_file_path)
 
-        ret = {'terminoloski_kandidati': [
-            {
-                'POSoznake': tk['msd'],
-                'kandidat': tk['terms'],  # more to bit lemma al terms?
-                'kanonicnaoblika': tk['canonical'],
-                'ranking': tk['ranking'],
-                'podporneutezi': [
-                    0.0,  # ????????
-                    0.0  # ??????
-                ],
-                'pogostostpojavljanja': [0, 0]  # ???????
-            }
-            for tk in data if tk['terms'] not in prepovedane_besede
-        ]}
-        return ret, 200
+        if res.status_code != 200:
+            return Response(str(data), 400)
+            # return str(data), 400
+        try:
+            ret = {'terminoloski_kandidati': [
+                {
+                    'POSoznake': tk['term_example_msd'],
+                    'kandidat': tk['lemma'],  # more to bit lemma al terms?
+                    'kanonicnaoblika': tk['canonical'],
+                    'ranking': tk['ranking'],
+                    'podporneutezi': [
+                        0.0,  # ????????
+                        0.0  # ??????
+                    ],
+                    # 'pogostostpojavljanja': [0, 0]  # ???????
+                    'pogostostpojavljanja': tk['frequency']  # ???????
+                }
+                for tk in data if tk['lemma'] not in prepovedane_besede
+            ]}
+        except:
+            return Response(data, 400)
+        return Response(ret, 200)
     except Exception as e:
-        return str(e), 500
+        return Response(str(e), 500)
 
 
 def get_candidates_async(body):  # noqa: E501
