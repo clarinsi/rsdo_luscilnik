@@ -546,7 +546,7 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -616,7 +616,18 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "prepovedaneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -688,7 +699,18 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "prepovedaneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -757,7 +779,7 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -869,7 +891,7 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -1004,7 +1026,7 @@
                         }
                     },
                     {
-                        "name": "kljucnebesede",
+                        "name": "kljucneBesede",
                         "in": "query",
                         "required": false,
                         "schema": {

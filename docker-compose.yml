@@ -9,6 +9,7 @@ services:
     volumes: # when pushing to server, remove the first dot here in front of /mnt
       - /mnt/ssd/ds_ftp/classla_OS2022:/usr/src/app/classla_OS2022
       - ../classla/classla_resources:/root/classla_resources
+      - ../jobs_database_rsdo5:/usr/src/app/DB
     environment:
       - PYTHONUNBUFFERED=1
       - MDB_DATABASE=conllus_150k

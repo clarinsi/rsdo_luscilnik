@@ -311,7 +311,7 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: false
         style: form
@@ -366,7 +366,16 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
         in: query
         required: false
         style: form
@@ -422,7 +431,16 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
         in: query
         required: false
         style: form
@@ -459,7 +477,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -469,25 +487,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -495,6 +495,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -563,7 +581,7 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: false
         style: form
@@ -667,7 +685,7 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: false
         style: form

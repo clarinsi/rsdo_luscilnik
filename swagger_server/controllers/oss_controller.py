@@ -8,7 +8,7 @@ from swagger_server import util
 from flask import send_file
 
 
-def get_conllus(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+def get_conllus(leta=None, vrste=None, kljucne_besede=None, udk=None):  # noqa: E501
     """"Vrne seznam CoNNL-U-jev glede na iskalne pogoje
 
      # noqa: E501
@@ -17,22 +17,22 @@ def get_conllus(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E
     :type leta: List[int]
     :param vrste:
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
     :param udk:
     :type udk: List[str]
 
     :rtype: List[str]
     """
-    if not kljucnebesede:
+    if not kljucne_besede:
         return "Manjkajo kljucne besede", 400
-    files = db_utils.get_files_by_udc(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucne_besede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200
 
 
-def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+def get_extracted_words(leta=None, vrste=None, kljucne_besede=None, prepovedane_besede=None, udk=None):  # noqa: E501
     """Vrne terminloške kandidate glede na ... (sync)
 
      # noqa: E501
@@ -41,18 +41,21 @@ def get_extracted_words(leta=None, vrste=None, kljucnebesede=None, udk=None):  #
     :type leta: List[int]
     :param vrste:
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
+    :param prepovedane_besede:
+    :type prepovedane_besede: List[str]
     :param udk:
     :type udk: List[str]
 
     :rtype: List[TerminoloskiKandidat]
     """
-    terKand = db_utils.vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk)
+    terKand = db_utils.vrni_oss_terminoloske_kandidate(leta, vrste, kljucne_besede, prepovedane_besede, udk)
     return terKand, 200
 
 
-def get_extracted_words_async(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+def get_extracted_words_async(leta=None, vrste=None, kljucne_besede=None, prepovedane_besede=None,
+                              udk=None):  # noqa: E501
     """Vrne terminloške kandidate glede na ... (async)
 
      # noqa: E501
@@ -61,22 +64,25 @@ def get_extracted_words_async(leta=None, vrste=None, kljucnebesede=None, udk=Non
     :type leta: List[int]
     :param vrste:
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
+    :param prepovedane_besede:
+    :type prepovedane_besede: List[str]
     :param udk:
     :type udk: List[str]
 
     :rtype: str
     """
     job, is_old_job = JobManager.create_job(5, json.dumps(
-        {'leta': leta, 'vrste': vrste, 'kljucnebesede': kljucnebesede, 'udk': udk}))
+        {'leta': leta, 'vrste': vrste, 'kljucne_besede': kljucne_besede, 'prepovedane_besede': prepovedane_besede,
+         'udk': udk}))
     if job is None:
         return "Something went wrong", 500
     ret = {'check_job_url': f'{connexion.request.url_root}/job/{job.id}'}
     return ret, 200
 
 
-def get_files(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+def get_files(leta=None, vrste=None, kljucne_besede=None, udk=None):  # noqa: E501
     """Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje
 
      # noqa: E501
@@ -85,22 +91,22 @@ def get_files(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E50
     :type leta: List[int]
     :param vrste: 
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
     :param udk:
     :type udk: List[str]
 
     :rtype: str
     """
-    if not kljucnebesede:
+    if not kljucne_besede:
         return "Manjkajo kljucne besede", 400
-    files = db_utils.get_files_by_udc(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucne_besede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200
 
 
-def get_number_texts(leta=None, vrste=None, kljucnebesede=None, udk=None):  # noqa: E501
+def get_number_texts(leta=None, vrste=None, kljucne_besede=None, udk=None):  # noqa: E501
     """Vrne število besedil glede na iskalne pogoje
 
      # noqa: E501
@@ -109,8 +115,8 @@ def get_number_texts(leta=None, vrste=None, kljucnebesede=None, udk=None):  # no
     :type leta: List[int]
     :param vrste: 
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
     :param udk:
     :type udk: List[str]
 
@@ -119,29 +125,29 @@ def get_number_texts(leta=None, vrste=None, kljucnebesede=None, udk=None):  # no
     # if not kljucnebesede:
     #    return "Manjkajo kljucne besede", 400
 
-    files = db_utils.vrni_oss_dokumente(leta, vrste, kljucnebesede, udk)
+    files = db_utils.vrni_oss_dokumente(leta, vrste, kljucne_besede, udk)
     return len(files), 200
 
 
-def get_texts(leta, vrste, kljucnebesede, cerifpodrocja):  # noqa: E501
+def get_texts(leta=None, vrste=None, kljucne_besede=None, udk=None):  # noqa: E501
     """Vrne seznam besedil glede na iskalne pogoje
 
      # noqa: E501
 
-    :param leta: 
+    :param leta:
     :type leta: List[int]
-    :param vrste: 
+    :param vrste:
     :type vrste: List[int]
-    :param kljucnebesede:
-    :type kljucnebesede: List[str]
+    :param kljucne_besede:
+    :type kljucne_besede: List[str]
     :param udk:
     :type udk: List[str]
 
     :rtype: List[str]
     """
-    if not kljucnebesede:
+    if not kljucne_besede:
         return "Manjkajo kljucne besede", 400
-    files = db_utils.get_files_by_udc(kljucnebesede)
+    files = db_utils.get_files_by_udc(kljucne_besede)
     if not files:
         return 'Nobena datoteka ne ustreza iskalnemu pogoju', 404
     return ' '.join(files), 200

@@ -7,22 +7,14 @@ import os
 from swagger_server.util import get_random_filename
 from werkzeug.utils import secure_filename
 
-LOCAL_PATH = "requets_db/dbs"
-SERVER_PATH = "swagger_server/requets_db/dbs"
-
-if not os.path.exists(LOCAL_PATH):
-    if os.path.exists('requets_db'):
-        os.makedirs(LOCAL_PATH, exist_ok=True)
-    elif os.path.exists('swagger_server/requets_db'):
-        os.makedirs(SERVER_PATH, exist_ok=True)
-
-DB = f'{LOCAL_PATH}/jobs.db'
-if not os.path.exists(LOCAL_PATH):
-    DB = f'{SERVER_PATH}/jobs.db'
-db = SqliteDatabase(DB, pragmas={
-    # 'journal_mode': 'wal',
-    'cache_size': -1 * 128 * 1024,  # 128MB
-    'foreign_keys': 1
+DB_Path = 'DB/jobs.db'
+if not os.path.exists('DB'):
+    os.makedirs('DB', exist_ok=True)
+db = SqliteDatabase(DB_Path, pragmas={
+    'journal_mode': 'wal',
+    'cache_size': -1 * 256 * 1024,  # 256MB
+    'foreign_keys': 1,
+    'charset': 'utf8'
 })
 
 

@@ -33,7 +33,7 @@ def get_files_by_udc(udc):
 
     return ret
 
-def vrni_oss_dokumente(leta, vrste, kljucnebesede, udk):
+def vrni_oss_dokumente(leta, vrste, kljucne_besede, udk):
     ret = []
   
     try:
@@ -66,12 +66,12 @@ def vrni_oss_dokumente(leta, vrste, kljucnebesede, udk):
             where=where + " tipologija IN (%s) " % (where_in_vrste)
             params=params+vrste
 
-        if (kljucnebesede):
+        if (kljucne_besede):
             if (where):
                 where=where+ " AND "
-            where_in_kb = ','.join(['%s'] * len(kljucnebesede))
+            where_in_kb = ','.join(['%s'] * len(kljucne_besede))
             where=where + " kljucnabeseda IN (%s) " % (where_in_kb)
-            params=params+kljucnebesede
+            params=params+kljucne_besede
 
         if(where):
             sql=sql+" where " + where + ";"
@@ -91,7 +91,7 @@ def vrni_oss_dokumente(leta, vrste, kljucnebesede, udk):
     return ret
 
 
-def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
+def vrni_oss_terminoloske_kandidate(leta, vrste, kljucne_besede, prepovedane_besede, udk):
     ret = []
   
     try:
@@ -124,12 +124,12 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
             where=where + " tipologija IN (%s) " % (where_in_vrste)
             params=params+vrste
 
-        if (kljucnebesede):
+        if (kljucne_besede):
             if (where):
                 where=where+ " AND "
-            where_in_kb = ','.join(['%s'] * len(kljucnebesede))
+            where_in_kb = ','.join(['%s'] * len(kljucne_besede))
             where=where + " kljucnabeseda IN (%s) " % (where_in_kb)
-            params=params+kljucnebesede
+            params=params+kljucne_besede
 
         if(where):
             sql=sql+" where " + where

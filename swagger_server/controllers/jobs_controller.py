@@ -243,7 +243,9 @@ def execute_classla_job(job: Job):
         classla_sem.acquire()
         job.started_on = datetime.datetime.utcnow()
         job.save()
-        conllu, _ = cl_utils.raw_text_to_conllu(job.job_input)
+        conllu, status = cl_utils.raw_text_to_conllu(job.job_input)
+        if status != 200:
+            conllu = f'ERROR - {conllu}'
         job.job_output = conllu
         job.finished_on = datetime.datetime.utcnow()
         job.save()
@@ -268,7 +270,7 @@ def execute_ateapi_job(job: Job):
                     try:
                         ret_json = _res.response[0].decode('utf-8')
                     except:
-                        ret_json = "Unknown exception."
+                        ret_json = "ERROR - Unknown exception."
 
                 if _res.status_code != 200:
                     ret_json = f'ERROR - {ret_json}'
@@ -287,8 +289,8 @@ def execute_izluscipoiskanju_job(job: Job):
         job.started_on = datetime.datetime.utcnow()
         job.save()
         info = json.loads(job.job_input)
-        terKand = db_utils.vrni_oss_terminoloske_kandidate(info['leta'], info['vrste'], info['kljucnebesede'],
-                                                           info['udk'])
+        terKand = db_utils.vrni_oss_terminoloske_kandidate(info['leta'], info['vrste'], info['kljucne_besede'],
+                                                           info['prepovedane_besede'], info['udk'])
         job.job_output = terKand
         job.finished_on = datetime.datetime.utcnow()
         job.save()
