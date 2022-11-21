@@ -276,7 +276,7 @@ def execute_ateapi_job(job: Job):
                     ret_json = f'ERROR - {ret_json}'
             except:
                 ret_json = "ERROR - Unknown exception."
-        job.job_output = ret_json
+        job.job_output = json.dumps(ret_json, ensure_ascii=False)
         job.finished_on = datetime.datetime.utcnow()
         job.save()
     finally:
@@ -291,7 +291,7 @@ def execute_izluscipoiskanju_job(job: Job):
         info = json.loads(job.job_input)
         terKand = db_utils.vrni_oss_terminoloske_kandidate(info['leta'], info['vrste'], info['kljucne_besede'],
                                                            info['prepovedane_besede'], info['udk'])
-        job.job_output = terKand
+        job.job_output = json.dumps(terKand, ensure_ascii=False)
         job.finished_on = datetime.datetime.utcnow()
         job.save()
     finally:
