@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 ATEapi_endpoint = "http://ate-api:5000/predict"
 
 # endpoint below to be used only for development purposes (don't need to run docker)
-# ATEapi_endpoint = "http://localhost:5000/predict"
+# ATEapi_endpoint = "http://localhost:5001/predict"
 
 
 def do_izlusci(conllus, prepovedane_besede):
@@ -54,7 +54,7 @@ def do_izlusci(conllus, prepovedane_besede):
                         0.0  # ??????
                     ],
                     # 'pogostostpojavljanja': [0, 0]  # ???????
-                    'pogostostpojavljanja': tk['frequency']  # ???????
+                    'pogostostpojavljanja': int(tk['frequency'])  # ???????
                 }
                 for tk in data if tk['lemma'] not in prepovedane_besede
             ]}

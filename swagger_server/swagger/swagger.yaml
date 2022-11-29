@@ -339,6 +339,60 @@ paths:
                 format: int64
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne število besedil glede na iskalne pogoje
+      operationId: get_number_texts_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/izlusciPoIskanju:
     get:
       tags:
@@ -404,6 +458,70 @@ paths:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne terminloške kandidate glede na ... (sync)
+      operationId: get_extracted_words_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TerminoloskiKandidat'
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/izlusciPoIskanjuAsync:
     get:
       tags:
@@ -467,6 +585,68 @@ paths:
                 type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne terminloške kandidate glede na ... (async)
+      operationId: get_extracted_words_async_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/datotekePoIskanju:
     get:
       tags:
@@ -527,6 +707,65 @@ paths:
                     format: byte
                 x-content-type: application/octet-stream
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne
+        pogoje
+      operationId: get_files_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: string
+                    format: byte
+                x-content-type: application/octet-stream
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/datotekaPoId:
     get:
       tags:
@@ -610,6 +849,61 @@ paths:
                   type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne seznam CoNNL-U-jev glede na iskalne pogoje
+      operationId: get_conllus_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/conlluPoId:
     get:
       tags:
@@ -714,6 +1008,61 @@ paths:
                   type: string
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne seznam besedil glede na iskalne pogoje
+      operationId: get_texts_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
 components:
   schemas:
     TerminoloskiKandidat:
@@ -734,17 +1083,13 @@ components:
             type: number
             format: float
         pogostostpojavljanja:
-          type: array
-          items:
-            type: integer
-            format: int64
+          type: number
+          format: int64
       example:
         podporneutezi:
         - 6.0274563
         - 6.0274563
-        pogostostpojavljanja:
-        - 1
-        - 1
+        pogostostpojavljanja: 1.46581298050294517310021547018550336360931396484375
         POSoznake: POSoznake
         kanonicnaoblika: kanonicnaoblika
         nosilnautez: 0.8008282
@@ -869,4 +1214,57 @@ components:
         file:
           type: string
           format: binary
+  parameters:
+    leta:
+      name: leta
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    vrste:
+      name: vrste
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    kljucneBesede:
+      name: kljucneBesede
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+    prepovedaneBesede:
+      name: prepovedaneBesede
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+    udk:
+      name: udk
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
 

@@ -172,7 +172,8 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucne_besede, prepovedane_bes
                     0.0,  # ????????
                     0.0  # ??????
                 ],
-                'pogostostpojavljanja': [tf, 0]  # ???????
+                # 'pogostostpojavljanja': [tf 0.0]  # ???????
+                'pogostostpojavljanja': int(tf)
             }
             for upos,ngram,tfidf,tf in cur 
         ]}

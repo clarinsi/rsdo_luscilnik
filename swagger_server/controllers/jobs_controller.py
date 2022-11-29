@@ -68,9 +68,15 @@ def get_job_status(job_id):  # noqa: E501
             return JobResponse(job_status="currently processing", created_on=job.created_on,
                                started_on=job.started_on), 200
         if job.started_on is not None and job.finished_on is not None and not job.job_output.startswith("ERROR -"):
+            res = job.job_output
+            if job.job_type in [4, 5]:
+                try:
+                    res = json.loads(job.job_output)
+                except:
+                    pass
             return JobResponse(job_status="finished processing (OK)", created_on=job.created_on,
                                started_on=job.started_on,
-                               finished_on=job.finished_on, job_result=job.job_output), 200
+                               finished_on=job.finished_on, job_result=res), 200
         if job.started_on is not None and job.finished_on is not None and job.job_output.startswith("ERROR -"):
             return JobResponse(job_status="finished processing (ERROR)", created_on=job.created_on,
                                started_on=job.started_on,
@@ -249,6 +255,11 @@ def execute_classla_job(job: Job):
         job.job_output = conllu
         job.finished_on = datetime.datetime.utcnow()
         job.save()
+    except:
+        job.job_output = "ERROR - Something unexpected went wrong. Logs have been saved. Please contact the api admin if the problem persists."
+        job.finished_on = datetime.datetime.utcnow()
+        job.save()
+        print(f"Unexpected error at job {job.id}")
     finally:
         classla_sem.release()
 
@@ -279,6 +290,11 @@ def execute_ateapi_job(job: Job):
         job.job_output = json.dumps(ret_json, ensure_ascii=False)
         job.finished_on = datetime.datetime.utcnow()
         job.save()
+    except:
+        job.job_output = "ERROR - Something unexpected went wrong. Logs have been saved. Please contact the api admin if the problem persists."
+        job.finished_on = datetime.datetime.utcnow()
+        job.save()
+        print(f"Unexpected error at job {job.id}")
     finally:
         ateapi_sem.release()
 
@@ -294,6 +310,11 @@ def execute_izluscipoiskanju_job(job: Job):
         job.job_output = json.dumps(terKand, ensure_ascii=False)
         job.finished_on = datetime.datetime.utcnow()
         job.save()
+    except:
+        job.job_output = "ERROR - Something unexpected went wrong. Logs have been saved. Please contact the api admin if the problem persists."
+        job.finished_on = datetime.datetime.utcnow()
+        job.save()
+        print(f"Unexpected error at job {job.id}")
     finally:
         izluscipoiskanju_sem.release()
 

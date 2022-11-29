@@ -521,52 +521,36 @@
                 "summary": "Vrne število besedil glede na iskalne pogoje",
                 "operationId": "getNumberTexts",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne število besedil glede na iskalne pogoje",
+                "operationId": "getNumberTexts_post",
+                "parameters": [
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -591,63 +575,40 @@
                 "summary": "Vrne terminloške kandidate glede na ... (sync)",
                 "operationId": "getExtractedWords",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "prepovedaneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                   {"$ref": "#/components/parameters/leta"},
+                   {"$ref": "#/components/parameters/vrste"},
+                   {"$ref": "#/components/parameters/kljucneBesede"},
+                   {"$ref": "#/components/parameters/prepovedaneBesede"},
+                   {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TerminoloskiKandidat"
+                                    }
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne terminloške kandidate glede na ... (sync)",
+                "operationId": "getExtractedWords_post",
+                "parameters": [
+                   {"$ref": "#/components/parameters/leta"},
+                   {"$ref": "#/components/parameters/vrste"},
+                   {"$ref": "#/components/parameters/kljucneBesede"},
+                   {"$ref": "#/components/parameters/prepovedaneBesede"},
+                   {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -674,63 +635,37 @@
                 "summary": "Vrne terminloške kandidate glede na ... (async)",
                 "operationId": "getExtractedWordsAsync",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "prepovedaneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/prepovedaneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne terminloške kandidate glede na ... (async)",
+                "operationId": "getExtractedWordsAsync_post",
+                "parameters": [
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/prepovedaneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -754,52 +689,42 @@
                 "summary": "Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje",
                 "operationId": "getFiles",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "byte"
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne seznam binarnih zapisov v originalnem formatu glede na iskalne pogoje",
+                "operationId": "getFiles_post",
+                "parameters": [
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -866,52 +791,38 @@
                 "summary": "Vrne seznam CoNNL-U-jev glede na iskalne pogoje",
                 "operationId": "getConllus",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne seznam CoNNL-U-jev glede na iskalne pogoje",
+                "operationId": "getConllus_post",
+                "parameters": [
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -1001,52 +912,38 @@
                 "summary": "Vrne seznam besedil glede na iskalne pogoje",
                 "operationId": "getTexts",
                 "parameters": [
-                    {
-                        "name": "leta",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "vrste",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "format": "int64"
-                            }
-                        }
-                    },
-                    {
-                        "name": "kljucneBesede",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "name": "udk",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "oss-post"
+                ],
+                "summary": "Vrne seznam besedil glede na iskalne pogoje",
+                "operationId": "getTexts_post",
+                "parameters": [
+                    {"$ref": "#/components/parameters/leta"},
+                    {"$ref": "#/components/parameters/vrste"},
+                    {"$ref": "#/components/parameters/kljucneBesede"},
+                    {"$ref": "#/components/parameters/udk"}
                 ],
                 "responses": {
                     "200": {
@@ -1067,6 +964,65 @@
         }
     },
     "components": {
+        "parameters": {
+            "leta": {
+                "name": "leta",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "vrste": {
+                "name": "vrste",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "kljucneBesede": {
+                "name": "kljucneBesede",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "prepovedaneBesede": {
+                "name": "prepovedaneBesede",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "udk": {
+                "name": "udk",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "schemas": {
             "TerminoloskiKandidat": {
                 "type": "object",
@@ -1092,11 +1048,8 @@
                         }
                     },
                     "pogostostpojavljanja": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
+                        "type": "number",
+                        "format": "int64"
                     }
                 }
             },
@@ -1105,7 +1058,12 @@
                 "properties": {
                     "job_status": {
                         "type": "string",
-                        "enum": ["waiting in que", "currently processing", "finished processing (OK)", "finished processing (ERROR)"]
+                        "enum": [
+                            "waiting in que",
+                            "currently processing",
+                            "finished processing (OK)",
+                            "finished processing (ERROR)"
+                        ]
                     },
                     "finished_on": {
                         "type": "string",
