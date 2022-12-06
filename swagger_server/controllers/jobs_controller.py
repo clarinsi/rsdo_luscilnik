@@ -17,17 +17,39 @@ from werkzeug.datastructures import FileStorage
 import threading
 import time
 
-CLASSLA_CONCURANCE_LIMIT = 4
-DOC2TEXT_CONCURANCE_LIMIT = 4
-ATEAPI_CONCURANCE_LIMIT = 4
-IZLUSCI_PO_ISKANJU_CONCURANCE_LIMIT = 4
+CLASSLA_SMALL_SIZE_LIMIT = 500 * 1e3  # 500 KB, aka.: 500 * 10^3
 
-classla_sem = threading.Semaphore(CLASSLA_CONCURANCE_LIMIT)
-doc2text_sem = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT)
-ateapi_sem = threading.Semaphore(ATEAPI_CONCURANCE_LIMIT)
+DOC2TEXT_SMALL_SIZE_LIMIT = 10 * 1e6  # 10 MB
+
+ATEAPI_SMALL_SIZE_LIMIT = 2 * 1e6  # 2 MB
+
+########################################
+CLASSLA_CONCURANCE_LIMIT_BIG = 2
+CLASSLA_CONCURANCE_LIMIT_SMALL = 2
+
+DOC2TEXT_CONCURANCE_LIMIT_BIG = 2
+DOC2TEXT_CONCURANCE_LIMIT_SMALL = 2
+
+ATEAPI_CONCURANCE_LIMIT_BIG = 2
+ATEAPI_CONCURANCE_LIMIT_SMALL = 2
+
+IZLUSCI_PO_ISKANJU_CONCURANCE_LIMIT = 4
+########################################
+classla_sem_big = threading.Semaphore(CLASSLA_CONCURANCE_LIMIT_BIG)
+classla_sem_small = threading.Semaphore(CLASSLA_CONCURANCE_LIMIT_SMALL)
+
+doc2text_sem_big = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT_BIG)
+doc2text_sem_small = threading.Semaphore(DOC2TEXT_CONCURANCE_LIMIT_SMALL)
+
+ateapi_sem_big = threading.Semaphore(ATEAPI_CONCURANCE_LIMIT_BIG)
+ateapi_sem_small = threading.Semaphore(ATEAPI_CONCURANCE_LIMIT_SMALL)
+
 izluscipoiskanju_sem = threading.Semaphore(IZLUSCI_PO_ISKANJU_CONCURANCE_LIMIT)
 
-running_threads = {}
+running_threads = {}  # <--- dict currently not used, was trying to figure out how to cancel workers mid execution,
+
+
+# no luck with that yet
 
 
 def delete_job(job_id):  # noqa: E501
@@ -104,7 +126,19 @@ async def try_do_jobs():
         ex.submit(try_do_jobs_izluscipoiskanju)
 
 
-### Job looping
+# to pe je pod ex.submit
+# sub = ex.submit(execute_ateapi_job, job)
+# running_threads[job.id] = sub
+# time.sleep(1)
+# running_threads[job.id]
+# preveri ce je done: ```running_threads[job.id].done()``` (vrne true false)
+
+# was_canceled = running_threads[job.id].cancel()
+# Todo: Mogoce kaksna druga opcija? Ampak verjetno ne, ne vidim (še?) kak prekicat ONGOING job
+# To zgoraj preklice samo job, ki se se ni zacel, kar pa ni za ta use case uporabno.
+
+
+### Picking jobs for looping
 def try_do_jobs_izluscipoiskanju():
     while True:
         try:
@@ -113,35 +147,37 @@ def try_do_jobs_izluscipoiskanju():
                     .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 5) \
                     .limit(izluscipoiskanju_sem._value)
                 with cf.ThreadPoolExecutor(max_workers=IZLUSCI_PO_ISKANJU_CONCURANCE_LIMIT) as ex:
-                    [ex.submit(execute_izluscipoiskanju_job, job) for job in unfinished_jobs]
+                    [ex.submit(execute_izluscipoiskanju_job, job, izluscipoiskanju_sem) for job in unfinished_jobs]
         except Exception as e:
-            print(f"Exception in try_do_jobs_ateapi")
+            print(f"Exception in try_do_jobs_izluscipoiskanju")
             traceback.print_exc()
         finally:
             time.sleep(3)
 
 
-### Job looping
+### Picking jobs for looping
 def try_do_jobs_ateapi():
     while True:
         try:
-            if ateapi_sem._value > 0:
-                unfinished_jobs = Job.select() \
-                    .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 4) \
-                    .limit(ateapi_sem._value)
-                with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT) as ex:
-                    # [ex.submit(execute_ateapi_job, job) for job in unfinished_jobs]
-                    with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT) as ex:
-                        for job in unfinished_jobs:
-                            ex.submit(execute_ateapi_job, job)
-                            # sub = ex.submit(execute_ateapi_job, job)
-                            # running_threads[job.id] = sub
-                            # time.sleep(1)
-                            # running_threads[job.id]
-                            # preveri ce je done: ```running_threads[job.id].done()``` (vrne true false)
+            unfinished_jobs_big = []
+            unfinished_jobs_small = []
+            if ateapi_sem_big._value > 0:
+                unfinished_jobs_big.extend(Job.select().where(Job.finished_on.is_null(), Job.started_on.is_null(),
+                                                              Job.job_type == 4,
+                                                              Job.input_size > ATEAPI_SMALL_SIZE_LIMIT) \
+                                           .limit(ateapi_sem_big._value))
+            if ateapi_sem_small._value > 0:
+                unfinished_jobs_small.extend(Job.select().where(Job.finished_on.is_null(), Job.started_on.is_null(),
+                                                                Job.job_type == 4,
+                                                                Job.input_size <= ATEAPI_SMALL_SIZE_LIMIT) \
+                                             .limit(ateapi_sem_small._value))
 
-                            # was_canceled = running_threads[job.id].cancel()
-                            # Todo: Mogoce kaksna druga opcija? Ampak verjetno ne, ne vidim (še?) kak prekicat ONGOING job
+            if len(unfinished_jobs_big) > 0:
+                with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT_BIG) as ex:
+                    [ex.submit(execute_ateapi_job, job, ateapi_sem_big) for job in unfinished_jobs_big]
+            if len(unfinished_jobs_small) > 0:
+                with cf.ThreadPoolExecutor(max_workers=ATEAPI_CONCURANCE_LIMIT_SMALL) as ex:
+                    [ex.submit(execute_ateapi_job, job, ateapi_sem_small) for job in unfinished_jobs_small]
         except Exception as e:
             print(f"Exception in try_do_jobs_ateapi")
             traceback.print_exc()
@@ -149,27 +185,51 @@ def try_do_jobs_ateapi():
             time.sleep(3)
 
 
-### Job looping
+### Picking jobs for looping
 def try_do_jobs_classla():
     time.sleep(15)  # wait for tokenizers to load for classla ...
     while True:
         try:
-            if cl_utils.nlp_loaded:
-                if classla_sem._value > 0:
-                    unfinished_jobs_txt = Job.select() \
-                        .where(Job.finished_on.is_null(), Job.job_type == 2,
-                               Job.input_file.is_null(False)) \
-                        .limit(classla_sem._value)
+            if not cl_utils.nlp_loaded:
+                raise Exception("NLP utils not loaded yet.")
 
-                    unfinished_jobs_no_txt = Job.select() \
-                        .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 2,
-                               Job.input_file.is_null()) \
-                        .limit(classla_sem._value)
+            unfinished_jobs_big = []
+            unfinished_jobs_small = []
 
-                    unfinished_jobs = [j for j in unfinished_jobs_txt] + [j for j in unfinished_jobs_no_txt]
-                    unfinished_jobs = unfinished_jobs[:classla_sem._value]
-                    with cf.ThreadPoolExecutor(max_workers=CLASSLA_CONCURANCE_LIMIT) as ex:
-                        [ex.submit(execute_classla_job, job) for job in unfinished_jobs]
+            if classla_sem_big._value > 0:
+                unfinished_jobs_txt = Job.select() \
+                    .where(Job.finished_on.is_null(), Job.job_type == 2,
+                           Job.input_file.is_null(False), Job.input_size > CLASSLA_SMALL_SIZE_LIMIT) \
+                    .limit(classla_sem_big._value)
+
+                unfinished_jobs_no_txt = Job.select() \
+                    .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 2,
+                           Job.input_file.is_null(), Job.input_size > CLASSLA_SMALL_SIZE_LIMIT) \
+                    .limit(classla_sem_big._value)
+
+                unfinished_jobs_big = [j for j in unfinished_jobs_txt] + [j for j in unfinished_jobs_no_txt]
+                unfinished_jobs_big = unfinished_jobs_big[:classla_sem_big._value]
+
+            if classla_sem_small._value > 0:
+                unfinished_jobs_txt = Job.select() \
+                    .where(Job.finished_on.is_null(), Job.job_type == 2,
+                           Job.input_file.is_null(False), Job.input_size <= CLASSLA_SMALL_SIZE_LIMIT) \
+                    .limit(classla_sem_small._value)
+
+                unfinished_jobs_no_txt = Job.select() \
+                    .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type == 2,
+                           Job.input_file.is_null(), Job.input_size <= CLASSLA_SMALL_SIZE_LIMIT) \
+                    .limit(classla_sem_small._value)
+
+                unfinished_jobs_small = [j for j in unfinished_jobs_txt] + [j for j in unfinished_jobs_no_txt]
+                unfinished_jobs_small = unfinished_jobs_small[:classla_sem_small._value]
+
+            if len(unfinished_jobs_big) > 0:
+                with cf.ThreadPoolExecutor(max_workers=CLASSLA_CONCURANCE_LIMIT_BIG) as ex:
+                    [ex.submit(execute_classla_job, job, doc2text_sem_big) for job in unfinished_jobs_big]
+            if len(unfinished_jobs_small) > 0:
+                with cf.ThreadPoolExecutor(max_workers=CLASSLA_CONCURANCE_LIMIT_SMALL) as ex:
+                    [ex.submit(execute_classla_job, job, doc2text_sem_small) for job in unfinished_jobs_small]
 
         except Exception as e:
             print(f"Exception in try_do_jobs_classla")
@@ -178,16 +238,29 @@ def try_do_jobs_classla():
             time.sleep(3)
 
 
-### Job looping
+### Picking jobs for looping
 def try_do_jobs_doc2text():
     while True:
         try:
-            if doc2text_sem._value > 0:
-                unfinished_jobs = Job.select() \
-                    .where(Job.finished_on.is_null(), Job.started_on.is_null(), Job.job_type << [1, 12, 3, 32]) \
-                    .limit(doc2text_sem._value)
-                with cf.ThreadPoolExecutor(max_workers=DOC2TEXT_CONCURANCE_LIMIT) as ex:
-                    [ex.submit(execute_doc2text_job, job) for job in unfinished_jobs]
+            unfinished_jobs_big = []
+            unfinished_jobs_small = []
+            if doc2text_sem_big._value > 0:
+                unfinished_jobs_big.extend(Job.select().where(Job.finished_on.is_null(), Job.started_on.is_null(),
+                                                              Job.job_type << [1, 12, 3, 32],
+                                                              Job.input_size > DOC2TEXT_SMALL_SIZE_LIMIT) \
+                                           .limit(doc2text_sem_big._value))
+            if doc2text_sem_small._value > 0:
+                unfinished_jobs_small.extend(Job.select().where(Job.finished_on.is_null(), Job.started_on.is_null(),
+                                                                Job.job_type << [1, 12, 3, 32],
+                                                                Job.input_size <= DOC2TEXT_SMALL_SIZE_LIMIT) \
+                                             .limit(doc2text_sem_small._value))
+
+            if len(unfinished_jobs_big) > 0:
+                with cf.ThreadPoolExecutor(max_workers=DOC2TEXT_CONCURANCE_LIMIT_BIG) as ex:
+                    [ex.submit(execute_doc2text_job, job, doc2text_sem_big) for job in unfinished_jobs_big]
+            if len(unfinished_jobs_small) > 0:
+                with cf.ThreadPoolExecutor(max_workers=DOC2TEXT_CONCURANCE_LIMIT_SMALL) as ex:
+                    [ex.submit(execute_doc2text_job, job, doc2text_sem_small) for job in unfinished_jobs_small]
         except Exception as e:
             print(f"Exception in try_do_jobs_doc2text")
             traceback.print_exc()
@@ -195,13 +268,14 @@ def try_do_jobs_doc2text():
             time.sleep(3)
 
 
-async def prep_jobs(tasks):
-    await asyncio.gather(*tasks)
+# async def prep_jobs(tasks):
+#     await asyncio.gather(*tasks)
 
 
-def execute_doc2text_job(job: Job):
+####### JOB EXECUTION LOGIC
+def execute_doc2text_job(job: Job, sem: threading.Semaphore):
     try:
-        doc2text_sem.acquire()
+        sem.acquire()
         del_file = False
         job.started_on = datetime.datetime.utcnow()
         job.save()
@@ -209,7 +283,7 @@ def execute_doc2text_job(job: Job):
         tmp_file_path = job.input_file
         if not os.path.exists(tmp_file_path):
             job.finished_on = datetime.datetime.utcnow()
-            job.job_output = "ERROR - Temporary file went missing, couldn't properly finish job"
+            job.job_output = "ERROR - Temporary file went missing, couldn't properly finish job. Please try executing the job again."
             job.save()
             return
 
@@ -241,12 +315,13 @@ def execute_doc2text_job(job: Job):
         job.started_on = None
         job.save()
     finally:
-        doc2text_sem.release()
+        sem.release()
 
 
-def execute_classla_job(job: Job):
+####### JOB EXECUTION LOGIC
+def execute_classla_job(job: Job, sem: threading.Semaphore):
     try:
-        classla_sem.acquire()
+        sem.acquire()
         job.started_on = datetime.datetime.utcnow()
         job.save()
         conllu, status = cl_utils.raw_text_to_conllu(job.job_input)
@@ -261,12 +336,13 @@ def execute_classla_job(job: Job):
         job.save()
         print(f"Unexpected error at job {job.id}")
     finally:
-        classla_sem.release()
+        sem.release()
 
 
-def execute_ateapi_job(job: Job):
+####### JOB EXECUTION LOGIC
+def execute_ateapi_job(job: Job, sem: threading.Semaphore):
     try:
-        ateapi_sem.acquire()
+        sem.acquire()
         job.started_on = datetime.datetime.utcnow()
         job.save()
         info = json.loads(job.job_input)
@@ -296,12 +372,13 @@ def execute_ateapi_job(job: Job):
         job.save()
         print(f"Unexpected error at job {job.id}")
     finally:
-        ateapi_sem.release()
+        sem.release()
 
 
-def execute_izluscipoiskanju_job(job: Job):
+####### JOB EXECUTION LOGIC
+def execute_izluscipoiskanju_job(job: Job, sem: threading.Semaphore):
     try:
-        izluscipoiskanju_sem.acquire()
+        sem.acquire()
         job.started_on = datetime.datetime.utcnow()
         job.save()
         info = json.loads(job.job_input)
@@ -316,7 +393,7 @@ def execute_izluscipoiskanju_job(job: Job):
         job.save()
         print(f"Unexpected error at job {job.id}")
     finally:
-        izluscipoiskanju_sem.release()
+        sem.release()
 
 
 clear_up_unfinished_jobs()

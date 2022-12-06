@@ -65,7 +65,8 @@ class JobManager:
                 pathlib.Path('tmp').mkdir(exist_ok=True)
                 job_input: werkzeug.datastructures.FileStorage
                 job_input.save(tmp_file)
-                job, is_new = Job.get_or_create(job_type=job_type, input_file=tmp_file, input_size=-1)
+                job, is_new = Job.get_or_create(job_type=job_type, input_file=tmp_file,
+                                                input_size=os.stat(tmp_file).st_size)
             return job, is_new
 
         except Exception as e:
