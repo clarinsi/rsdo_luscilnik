@@ -51,3 +51,10 @@ docker build -t swagger_server .
 # starting up a container
 docker run -p 8080:8080 swagger_server
 ```
+
+## Running with docker, including the included ATEapi
+```bash
+docker-compose up -d --build
+# or, if the top one doesn't work.
+DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose up -d --build
+```
