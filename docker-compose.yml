@@ -1,0 +1,58 @@
+version: '3.1'
+services:
+  flask-serv:
+    build: .
+    restart: always
+    image: flask-server
+    ports:
+      - "8080:8080"
+    volumes: 
+      - ../classla/classla_resources:/root/classla_resources
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MDB_DATABASE=conllus_150k
+      - MDB_HOST=mariadb
+      - MDB_PORT=3306
+      - MDB_USER=rsdo5
+      - MDB_PASSWORD=rsdo5mysql
+  
+  tika2:
+    image: apache/tika:1.28.4-full
+    entrypoint: [ "/bin/sh", "-c", "java -jar /tika-server-1.28.4.jar -h 0.0.0.0 -p 9999" ]
+    restart: always
+    ports:
+      - "9999:9999"
+  
+  ate-api:
+    build: ./ATEapi
+    restart: always
+    volumes:
+      - ../classla/classla_resources:/home/appuser/classla_resources
+  
+  canonizer:
+    container_name: canonizer_service
+    build:
+      context: ./canonical_forms/web
+      dockerfile: Dockerfile.prod
+    command: gunicorn --bind 0.0.0.0:5000 app:app
+    volumes:
+      - ../classla/classla_resources:/home/app/classla_resources
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - APP_FOLDER=/home/app/web
+
+  mariadb:
+    image: mariadb/columnstore
+    restart: always
+    container_name: mariadbcs
+    ports:
+      - "3306:3306"
+    volumes:
+      - mdbdata:/var/lib/mysql
+      - mdbcs-data:/var/lib/columnstore
+      - mdbcs-etc:/etc/columnstore
+volumes:
+    mdbdata:
+    mdbcs-data:
+    mdbcs-etc:

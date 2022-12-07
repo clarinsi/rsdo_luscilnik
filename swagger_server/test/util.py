@@ -1,18 +1,8 @@
-import codecs
 import datetime
-import os.path
-import pathlib
 
 import six
 import typing
-
-import werkzeug.datastructures
-from werkzeug.utils import secure_filename
-
 from swagger_server import type_util
-import pandas as pd
-import string
-import random
 
 
 def _deserialize(data, klass):
@@ -150,66 +140,3 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
-
-
-def is_docker() -> bool:
-    # todo: better way of checking if we're on docker or if we're in the develoment enviroment
-    return not os.path.exists('.env')
-
-
-def get_conllu_file_path_by_id(file_id):
-    r = f'classla_OS2022/conll/rsdo_doc-{file_id}.plainText.conllu'
-    if is_docker():
-        return f'/usr/src/app/{r}'
-    return f'../mnt/ssd/ds_ftp/{r}'
-
-
-def get_original_file_path_by_id(file_id):
-    r = f'classla_OS2022/besedila/rsdo_doc-{file_id}.xml'
-    if is_docker():
-        return f'/usr/src/app/{r}'
-    return f'../mnt/ssd/ds_ftp/{r}'
-
-
-def get_tei_file_path_by_id(file_id):
-    r = f'classla_OS2022/tei/rsdo_doc-{file_id}.plainText.tei.xml'
-    if is_docker():
-        return f'/usr/src/app/{r}'
-    return f'../mnt/ssd/ds_ftp/{r}'
-
-
-def get_files_by_keywords(kljucnebesede):
-    ret = []
-    kljucnebesede = [k.lower() for k in kljucnebesede]
-    # Temporary solution until connection with mariadb is fixed
-    ngrams_path = "classla_OS2022/ngrams/" if is_docker() else "../mnt/ssd/ds_ftp/classla_OS2022/ngrams/"
-    print("Looping trough ngrams")
-    for path, dirs, files, in os.walk(ngrams_path):
-        for i, _file in enumerate(files[:100]):
-            if i % 500 == 0: print(f"{i}/{len(files)}")
-            file = f'{ngrams_path}{_file}'
-            data = pd.read_csv(file, sep='\t')
-            amount = len(data[data['ngram_len'] == 1 & data['gram_text'].str.lower().isin(kljucnebesede)])
-            # this should be 1
-            if amount >= 1:
-                ret.append(_file[9:][:-12])
-    return ret
-
-
-def get_random_filename():
-    ts = str(int(datetime.datetime.now().timestamp()))
-    extra = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-    return f'{ts}_{extra}'
-
-
-def create_random_file_in_tmp_folder(fill_content, extension=""):
-    pathlib.Path('tmp').mkdir(exist_ok=True)
-    tmp_file = ""
-    while True:
-        # just in case a VERY rare chance of a same generate name happens
-        tmp_file = "tmp/" + secure_filename(get_random_filename() + extension)
-        if not os.path.exists(tmp_file):
-            break
-    with codecs.open(tmp_file, 'w', 'utf-8') as f:
-        f.write(fill_content)
-    return tmp_file

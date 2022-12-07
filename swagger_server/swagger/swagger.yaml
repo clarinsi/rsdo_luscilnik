@@ -6,18 +6,64 @@ servers:
 - url: http://localhost:8089
   description: Generated server url
 paths:
-  /oznaciBesedilo:
+  /job/{job_id}:
+    get:
+      tags:
+      - jobs
+      summary: Vrne status
+      operationId: get_job_status
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+      x-openapi-router-controller: swagger_server.controllers.jobs_controller
+    delete:
+      tags:
+      - jobs
+      summary: Izbriše job
+      operationId: delete_job
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.jobs_controller
+  /oznaciBesediloAsync:
     post:
       tags:
-      - marktext
-      summary: Označi besedilo s classlo/stanzo z uporabo slovenskih modelov ter vrne
-        conll-u format
+      - marktext-async
+      summary: Označi surovo (angl. raw) besedilo s classlo/stanzo z uporabo slovenskih
+        modelov ter vrne conll-u format
       operationId: get_text
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/oznaciBesediloAsync_body'
         required: true
       responses:
         "200":
@@ -27,18 +73,101 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.marktext_controller
-  /izlusci:
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVBesediloAsync:
+    post:
+      tags:
+      - marktext-async
+      summary: "Pretvori datoteko v besedilo, vrača tekst"
+      operationId: get_text_from_doc_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesediloAsync_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVConlluAsync:
+    post:
+      tags:
+      - marktext-async
+      summary: Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih
+        modelov ter vrne conll-u format
+      operationId: get_conllu_from_file_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVConlluAsync_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVConlluAsync/ocr:
+    post:
+      tags:
+      - marktext-async
+      summary: Pretvori datoteko v besedilo in označi s classlo/stanzo z uporabo slovenskih
+        modelov ter vrne conll-u format
+      operationId: get_conllu_from_file_ocr_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVConlluAsync_ocr_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /datotekaVBesediloAsync/ocr:
+    post:
+      tags:
+      - marktext-async
+      summary: "Pretvori datoteko v besedilo s pomočjo ocr razpoznavanja, vrača tekst"
+      operationId: get_text_from_file_ocr_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesediloAsync_ocr_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_async_controller
+  /izlusciSync:
     post:
       tags:
       - extract
-      summary: Izlusci terminološke kandidate iz seznama besedil v conllu obliki
-      operationId: get_candidates
+      summary: "Izlusci terminološke kandidate iz seznama besedil v conllu obliki\
+        \ [sihrono, rezultat v sami zahtevi]"
+      operationId: get_candidates_sync
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/izlusci_body'
+              $ref: '#/components/schemas/izlusciSync_body'
         required: true
       responses:
         "200":
@@ -51,10 +180,52 @@ paths:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.extract_controller
-  /datotekaVBesedilo/ocr:
+  /izlusciAsync:
     post:
       tags:
-      - doc-2text
+      - extract
+      summary: "Izlusci terminološke kandidate iz seznama besedil v conllu obliki\
+        \ [asinhrono, ustvari novi job]"
+      operationId: get_candidates_async
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/izlusciAsync_body'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.extract_controller
+  /datotekaVBesediloSync:
+    post:
+      tags:
+      - marktext-sync
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača besedilo"
+      operationId: datoteka_v_besedilo_sync_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVBesediloSync_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
+  /datotekaVBesediloSync/ocr:
+    post:
+      tags:
+      - marktext-sync
       summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo\
         \ s pomočjo ocr razpoznavanja"
       operationId: get_text_ocr
@@ -62,7 +233,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/datotekaVBesedilo_ocr_body'
+              $ref: '#/components/schemas/datotekaVBesediloSync_ocr_body'
       responses:
         "200":
           description: OK
@@ -71,18 +242,18 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
-  /datotekaVBesedilo/:
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
+  /datotekaVConlluSync:
     post:
       tags:
-      - doc-2text
-      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v besedilo"
-      operationId: datoteka_v_besedilo_post
+      - marktext-sync
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... vrača conllu"
+      operationId: datoteka_v_besedilo_in_classla
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/datotekaVBesedilo_body'
+              $ref: '#/components/schemas/datotekaVConlluSync_body'
       responses:
         "200":
           description: OK
@@ -91,7 +262,28 @@ paths:
               schema:
                 type: string
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.doc2text_controller
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
+  /datotekaVConlluSync/ocr:
+    post:
+      tags:
+      - marktext-sync
+      summary: "Pretvori datoteko formata pdf, doc, docx, ppt, xls,... v conllu s\
+        \ pomočjo ocr razpoznavanja"
+      operationId: get_conllu_ocr
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/datotekaVConlluSync_ocr_body'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.marktext_sync_controller
   /oss/steviloBesedilPoIskanju:
     get:
       tags:
@@ -101,7 +293,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -111,25 +303,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -137,6 +311,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -156,7 +348,7 @@ paths:
       parameters:
       - name: leta
         in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -166,25 +358,7 @@ paths:
             format: int64
       - name: vrste
         in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: kljucnebesede
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: cerifpodrocja
-        in: query
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -192,6 +366,24 @@ paths:
           items:
             type: integer
             format: int64
+      - name: kljucnebesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -270,7 +462,7 @@ paths:
       summary: Vrne binarni zapis v originalnem formatu po id-ju datoteke
       operationId: get_file
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form
@@ -353,7 +545,7 @@ paths:
       summary: Vrne CoNNL-U po id-ju datoteke
       operationId: get_conllu
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form
@@ -377,7 +569,7 @@ paths:
       summary: Vrne besedilo po id-ju datoteke
       operationId: oss_besedilo_po_id_get
       parameters:
-      - name: id
+      - name: file_id
         in: query
         required: true
         style: form
@@ -485,7 +677,72 @@ components:
         kanonicnaoblika: kanonicnaoblika
         nosilnautez: 0.8008282
         kandidat: kandidat
-    izlusci_body:
+    JobResponse:
+      required:
+      - finished_job
+      type: object
+      properties:
+        job_status:
+          type: string
+          enum:
+          - waiting in que
+          - currently processing
+          - finished processing
+        finished_on:
+          type: string
+          format: date-time
+        started_on:
+          type: string
+          format: date-time
+        created_on:
+          type: string
+          format: date-time
+        job_result:
+          type: string
+      example:
+        job_status: waiting in que
+        started_on: 2000-01-23T04:56:07.000+00:00
+        created_on: 2000-01-23T04:56:07.000+00:00
+        finished_on: 2000-01-23T04:56:07.000+00:00
+        job_result: job_result
+    oznaciBesediloAsync_body:
+      type: object
+      properties:
+        besedilo:
+          type: string
+    datotekaVBesediloAsync_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluAsync_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluAsync_ocr_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVBesediloAsync_ocr_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    izlusciSync_body:
       type: object
       properties:
         conllus:
@@ -496,7 +753,18 @@ components:
           type: array
           items:
             type: string
-    datotekaVBesedilo_ocr_body:
+    izlusciAsync_body:
+      type: object
+      properties:
+        conllus:
+          type: array
+          items:
+            type: string
+        prepovedaneBesede:
+          type: array
+          items:
+            type: string
+    datotekaVBesediloSync_body:
       required:
       - file
       type: object
@@ -504,7 +772,23 @@ components:
         file:
           type: string
           format: binary
-    datotekaVBesedilo_body:
+    datotekaVBesediloSync_ocr_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluSync_body:
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    datotekaVConlluSync_ocr_body:
       required:
       - file
       type: object
