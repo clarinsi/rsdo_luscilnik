@@ -335,6 +335,7 @@ def execute_classla_job(job: Job, sem: threading.Semaphore):
         job.finished_on = datetime.datetime.utcnow()
         job.save()
         print(f"Unexpected error at job {job.id}")
+        print(traceback.format_exc())
     finally:
         sem.release()
 
@@ -371,6 +372,7 @@ def execute_ateapi_job(job: Job, sem: threading.Semaphore):
         job.finished_on = datetime.datetime.utcnow()
         job.save()
         print(f"Unexpected error at job {job.id}")
+        print(traceback.format_exc())
     finally:
         sem.release()
 
@@ -392,6 +394,7 @@ def execute_izluscipoiskanju_job(job: Job, sem: threading.Semaphore):
         job.finished_on = datetime.datetime.utcnow()
         job.save()
         print(f"Unexpected error at job {job.id}")
+        print(traceback.format_exc())
     finally:
         sem.release()
 
