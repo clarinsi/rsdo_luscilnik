@@ -448,6 +448,8 @@ def execute_ateapi_job(job: Job, sem: threading.Semaphore):
         _res = do_izlusci(info['conllus'], info['prepovedane_besede'])
         if type(_res) is tuple:
             ret_json = _res[0]
+            if _res[1] != 200:
+                ret_json = f'ERROR - {ret_json}'
         else:
             try:
                 if type(_res.response) is dict:

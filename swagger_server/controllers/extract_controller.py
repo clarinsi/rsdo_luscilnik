@@ -20,6 +20,8 @@ ATEapi_endpoint = "http://ate-api:5000/predict"
 
 def do_izlusci(conllus, prepovedane_besede):
     tmp_file_path = ""
+    if prepovedane_besede is None:
+        prepovedane_besede = []
     try:
         big_conllu = cl_utils.multipla_conllus_to_one_from_conllus_arr(conllus)
         tmp_file_path = create_random_file_in_tmp_folder(big_conllu, ".conllu")
