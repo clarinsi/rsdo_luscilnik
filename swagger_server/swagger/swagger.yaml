@@ -461,7 +461,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/TerminoloskiKandidat'
                 x-content-type: '*/*'
-      x-openapi-router-controller: swagger_server.controllers.oss_controller  
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller  
   /oss/izlusciPoIskanjuAsync:
     get:
       tags:
