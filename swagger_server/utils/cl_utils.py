@@ -10,8 +10,11 @@ nlp_loaded = True
 
 sent_extractor = re.compile(r"# sent_id = \d+\.\d+(.*?)\n\n", re.MULTILINE | re.DOTALL)
 
+
 def raw_text_to_conllu(text):
     try:
+        if text == '' or text is None:
+            raise Exception("Text can not be empty (when trying to make conllu for it)")
         docall = nlpSlo(text)
         docallconllu = docall.to_conll()
 

@@ -5,7 +5,7 @@ services:
     restart: always
     image: flask-server
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes: # when pushing to server, remove the first dot here in front of /mnt
       - /mnt/ssd/ds_ftp/classla_OS2022:/usr/src/app/classla_OS2022
       - ../classla/classla_resources:/root/classla_resources
