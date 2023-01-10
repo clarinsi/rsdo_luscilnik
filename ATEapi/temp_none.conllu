@@ -1,0 +1,10 @@
+# newpar id = 1
+# sent_id = 1.1
+# text = Tole je testno besedilo za označevanje.
+1	:	:	PUNCT	Z	_	_	_	_	_
+Tole 	:	:	PUNCT	Z	_	_	_	_	_
+je 	:	:	PUNCT	Z	_	_	_	_	_
+testno	:	:	PUNCT	Z	_	_	_	_	_
+besedilo	:	:	PUNCT	Z	_	_	_	_	_
+za	:	:	PUNCT	Z	_	_	_	_	_
+označevanje.	:	:	PUNCT	Z	_	_	_	_	_
