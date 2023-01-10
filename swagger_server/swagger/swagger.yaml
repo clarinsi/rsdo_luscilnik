@@ -343,7 +343,7 @@ paths:
     get:
       tags:
       - oss
-      summary: 'Vrne terminloške kandidate glede na '
+      summary: 'Vrne terminloške kandidate glede na iskalne pogoje'
       operationId: get_extracted_words
       parameters:
       - name: leta
@@ -384,6 +384,12 @@ paths:
           type: array
           items:
             type: string
+      - name: definicije
+        in: query
+        required: false
+        style: form
+        schema:
+          type: boolean
       responses:
         "200":
           description: OK
@@ -651,6 +657,8 @@ components:
           type: string
         kanonicnaoblika:
           type: string
+        definition:
+          type: string
         POSoznake:
           type: string
         nosilnautez:
@@ -753,6 +761,8 @@ components:
           type: array
           items:
             type: string
+        definicije:
+          type: boolean
     izlusciAsync_body:
       type: object
       properties:
@@ -764,6 +774,8 @@ components:
           type: array
           items:
             type: string
+        definicije:
+          type: boolean
     datotekaVBesediloSync_body:
       required:
       - file

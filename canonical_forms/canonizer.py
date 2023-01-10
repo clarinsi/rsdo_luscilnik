@@ -7,7 +7,7 @@ import classla
 from lemmagen3 import Lemmatizer
 
 
-classla.download("sl", logging_level="WARNING")
+#classla.download("sl", logging_level="WARNING")
 classla_nlp_pipeline = classla.Pipeline(
     lang="sl",
     processors="tokenize,pos,lemma,depparse",

@@ -37,7 +37,7 @@ Natančen opis in izvorni repozitorij dela projekta se nahaja na: https://github
 
 ### Podatkovna baza korpusa OSS 
 
-Podatkovna baza korpusa OSS vsebuje obdelana besedila iz korpusa OSS ter hkrati tudi iskalne indekse, ki omogočajo hitrejše poizvedbe po podatkih. Prav tako so v podatkovni bazi predizračunani hevristični indeksi za iskanje terminoloških kandidatov ter procedure za obdelavo uporabniških besedil na enak način. Ker je sama vsebina podatkovne baze prevelika, so dodane samo skripte za kreiranje strukture tabele, sam korpus pa je v bazo potrebno po instalaciji uvoziti in zagnati njegovo obdelavo.
+Podatkovna baza korpusa OSS vsebuje obdelana besedila iz korpusa OSS ter hkrati tudi iskalne indekse, ki omogočajo hitrejše poizvedbe po podatkih. Prav tako so v podatkovni bazi predizračunani hevristični indeksi za iskanje terminoloških kandidatov ter procedure za obdelavo uporabniških besedil na enak način. Ker je sama vsebina podatkovne baze prevelika, so dodane samo skripte za kreiranje strukture tabele, sam korpus pa je v bazo potrebno po instalaciji uvoziti in zagnati njegovo obdelavo. Ker je za obdelavo potrebnih precej sistemskih sredstev, bodo obdelani podatki tudi ločeno objavljeni.
 
 Uporabljena je odprtokodna podatkovna baza MariaDB z ColumnStore hrambo. 
 

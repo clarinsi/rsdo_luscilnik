@@ -3,12 +3,13 @@ import os
 import sys
 import requests
 import json
+import time
 
 
 database_info = {
     'database': os.getenv("MDB_DATABASE", "oss"),
     'host': os.getenv("MDB_HOST", "localhost"),
-    'port': int(os.getenv("PORT", 3306)) ,
+    'port': int(os.getenv("MDB_PORT", 3306)) ,
     'user': os.getenv("MDB_USER", "root"),
     'password': os.getenv("MDB_PASSWORD", "root"),
 }
@@ -96,13 +97,13 @@ def vrni_oss_dokumente(leta, vrste, kljucnebesede, udk):
     return ret
 
 
-def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
+def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, prepovedane_besede, udk,definicije=False):
     ret = []
   
     try:
         print(database_info)
         conn = mariadb.connect(**database_info)
-        cur = conn.cursor()
+        cur = conn.cursor(dictionary=True)
         
         
         
@@ -142,7 +143,7 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
         print(sql)
         print(params)
 
-        sqltk=f"""Select ngram,upos,avg(tfidf) as tfidf, sum(tf) as tf from (
+        sqltk=f"""Select ngram,upos,convert(avg(tfidf),FLOAT) as tfidf, convert(sum(tf),INT) as tf from (
                     SELECT tf.ngram, tf.upos,(0.5+0.5*(tf.tf/d.maxtf))*log(152000/df.df)*(-1*log(1-((dff.df)/(1+df.df)))) as tfidf, tf.tf as tf
                     FROM ngrams_upos_tf tf, documents d,
                         (
@@ -160,34 +161,55 @@ def vrni_oss_terminoloske_kandidate(leta, vrste, kljucnebesede, udk):
                     order by tfidf desc
                     limit 1000;"""
                     #
+        #sqltk=f"""select ngram,upos,convert(1.0,float) as tfidf,%s as tf from ngrams_upos_tf limit 10;"""
+
         print (sqltk)
-        
+        #še prepovedane besede ven
+        start_time = time.time()
         cur.execute(sqltk,params)
         terms=cur.fetchall()
+        print("Čas poizbedbe je %.2f sekund" % (time.time() - start_time))
+        print (terms);
         #ret = list(cur)
         can = {'forms':[
-            ngram 
+            ngram["ngram"]
             for ngram in terms
             ]
         }
-        res = requests.post(ATEapi_endpoint, json=can)
-        data = res.json().canonical_forms
+        print (can);
+        res = requests.post(canonapi_endpoint, json=can)
+        
+        data = res.json()
+        print (data);
+        print (data.get("canonical_forms"));
+        print (terms);
+        print(zip(data.get("canonical_forms"),terms))
+
+
+
 
         ret = {'terminoloski_kandidati': [
             {
-                'POSoznake': x.upos,
-                'kandidat': x.ngram,  # more to bit lemma al terms?
+                'POSoznake': x.get("upos"),
+                'kandidat': x.get("ngram"),  # more to bit lemma al terms?
+                'definicija': None,
                 'kanonicnaoblika': d,
-                'ranking': x.tfidf,
+                'ranking': x.get('tfidf'),
                 'podporneutezi': [
                     0.0,  # ????????
                     0.0  # ??????
                 ],
-                'pogostostpojavljanja': [tf, 0]  # ???????
+                'pogostostpojavljanja': [x.get('tf'), 0]  # ???????
             }
-            for d,x in zip(data,cur) 
+            for (d,x) in zip(data.get("canonical_forms"),terms) 
         ]}
-            
+    
+        #if definicije
+        #idi z variablo sql po id-je dokumentov, preberi conlluje iz diska
+        #naredi en vlki conllu
+        #pokliči metodo
+
+
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
     

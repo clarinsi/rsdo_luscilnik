@@ -5,34 +5,35 @@ services:
     restart: always
     image: flask-server
     ports:
-      - "8080:8080"
-    volumes: 
+      - "8081:8080"
+    volumes: # when pushing to server, remove the first dot here in front of /mnt
+      - /mnt/ssd/ds_ftp/classla_OS2022:/usr/src/app/classla_OS2022
       - ../classla/classla_resources:/root/classla_resources
+      - ../jobs_database_rsdo5:/usr/src/app/DB
     environment:
       - PYTHONUNBUFFERED=1
       - MDB_DATABASE=conllus_150k
-      - MDB_HOST=mariadb
-      - MDB_PORT=3306
+      - MDB_HOST=164.8.252.72
+      - MDB_PORT=55655
       - MDB_USER=rsdo5
       - MDB_PASSWORD=rsdo5mysql
-  
   tika2:
     image: apache/tika:1.28.4-full
     entrypoint: [ "/bin/sh", "-c", "java -jar /tika-server-1.28.4.jar -h 0.0.0.0 -p 9999" ]
     restart: always
-    ports:
-      - "9999:9999"
-  
+    #ports:
+    #  - "9999"
   ate-api:
     build: ./ATEapi
     restart: always
+ #   ports:
+    #  - "5000:5000"
     volumes:
       - ../classla/classla_resources:/home/appuser/classla_resources
-  
   canonizer:
-    container_name: canonizer_service
+    container_name: canonizer_service_t
     build:
-      context: ./canonical_forms/web
+      context: ./canonical_forms/
       dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 app:app
     volumes:
@@ -41,18 +42,15 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=production
       - APP_FOLDER=/home/app/web
-
-  mariadb:
-    image: mariadb/columnstore
-    restart: always
-    container_name: mariadbcs
-    ports:
-      - "3306:3306"
+  definitions:
+    container_name: definition_extraction
+    build:
+      context: ./definition_extraction/
+      dockerfile: Dockerfile.prod
+    command: gunicorn --bind 0.0.0.0:5000 app:app
     volumes:
-      - mdbdata:/var/lib/mysql
-      - mdbcs-data:/var/lib/columnstore
-      - mdbcs-etc:/etc/columnstore
-volumes:
-    mdbdata:
-    mdbcs-data:
-    mdbcs-etc:
+      - ../classla/classla_resources:/home/app/classla_resources
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - APP_FOLDER=/home/app/web

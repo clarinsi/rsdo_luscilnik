@@ -14,7 +14,7 @@ class TerminoloskiKandidat(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, kandidat: str=None, kanonicnaoblika: str=None, po_soznake: str=None, nosilnautez: float=None, podporneutezi: List[float]=None, pogostostpojavljanja: List[int]=None):  # noqa: E501
+    def __init__(self, kandidat: str=None,  definicija: str=None, kanonicnaoblika: str=None, po_soznake: str=None, nosilnautez: float=None, podporneutezi: List[float]=None, pogostostpojavljanja: List[int]=None):  # noqa: E501
         """TerminoloskiKandidat - a model defined in Swagger
 
         :param kandidat: The kandidat of this TerminoloskiKandidat.  # noqa: E501
@@ -32,6 +32,7 @@ class TerminoloskiKandidat(Model):
         """
         self.swagger_types = {
             'kandidat': str,
+            'definicja': str,
             'kanonicnaoblika': str,
             'po_soznake': str,
             'nosilnautez': float,
@@ -41,6 +42,7 @@ class TerminoloskiKandidat(Model):
 
         self.attribute_map = {
             'kandidat': 'kandidat',
+            'definicija': 'definicija',
             'kanonicnaoblika': 'kanonicnaoblika',
             'po_soznake': 'POSoznake',
             'nosilnautez': 'nosilnautez',
@@ -48,6 +50,7 @@ class TerminoloskiKandidat(Model):
             'pogostostpojavljanja': 'pogostostpojavljanja'
         }
         self._kandidat = kandidat
+        self._definicija = definicija
         self._kanonicnaoblika = kanonicnaoblika
         self._po_soznake = po_soznake
         self._nosilnautez = nosilnautez
@@ -85,6 +88,27 @@ class TerminoloskiKandidat(Model):
         """
 
         self._kandidat = kandidat
+
+    @property
+    def definicija(self) -> str:
+        """Gets the definicija of this TerminoloskiKandidat.
+
+
+        :return: The definicija of this TerminoloskiKandidat.
+        :rtype: str
+        """
+        return self._definicija
+
+    @definicija.setter
+    def definicija(self, definicija: str):
+        """Sets the kandidat of this TerminoloskiKandidat.
+
+
+        :param kandidat: The kandidat of this TerminoloskiKandidat.
+        :type kandidat: str
+        """
+
+        self._definicija = definicija
 
     @property
     def kanonicnaoblika(self) -> str:

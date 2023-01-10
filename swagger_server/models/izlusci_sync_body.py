@@ -14,7 +14,7 @@ class IzlusciSyncBody(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, conllus: List[str]=None, prepovedane_besede: List[str]=None):  # noqa: E501
+    def __init__(self, conllus: List[str]=None, prepovedane_besede: List[str]=None, definicje: bool=False):  # noqa: E501
         """IzlusciSyncBody - a model defined in Swagger
 
         :param conllus: The conllus of this IzlusciSyncBody.  # noqa: E501
@@ -24,15 +24,18 @@ class IzlusciSyncBody(Model):
         """
         self.swagger_types = {
             'conllus': List[str],
-            'prepovedane_besede': List[str]
+            'prepovedane_besede': List[str],
+            'definicije':bool
         }
 
         self.attribute_map = {
             'conllus': 'conllus',
-            'prepovedane_besede': 'prepovedaneBesede'
+            'prepovedane_besede': 'prepovedaneBesede',
+            'definicije':'definicije'
         }
         self._conllus = conllus
         self._prepovedane_besede = prepovedane_besede
+        self._definicije = definicje
 
     @classmethod
     def from_dict(cls, dikt) -> 'IzlusciSyncBody':
@@ -65,6 +68,27 @@ class IzlusciSyncBody(Model):
         """
 
         self._conllus = conllus
+
+    @property
+    def definicije(self) -> bool:
+        """Gets the conllus of this IzlusciSyncBody.
+
+
+        :return: The conllus of this IzlusciSyncBody.
+        :rtype: List[str]
+        """
+        return self._definicije
+
+    @definicije.setter
+    def definicije(self, definicije: bool):
+        """Sets the conllus of this IzlusciSyncBody.
+
+
+        :param conllus: The conllus of this IzlusciSyncBody.
+        :type conllus: List[str]
+        """
+
+        self._definicije = definicije
 
     @property
     def prepovedane_besede(self) -> List[str]:

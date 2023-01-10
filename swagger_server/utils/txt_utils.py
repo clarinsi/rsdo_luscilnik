@@ -7,14 +7,50 @@ import xml.etree.ElementTree as ET
 from PyPDF2 import PdfReader
 from swagger_server.utils import cl_utils
 import cv2
+import json 
 import numpy as np
 import magic
 import re
 #to še mora v env 
 tika_server = "http://tika2:9999/tika"
+definicije_endpoint = "http://definitions:5000/DefExAPI/definition_sentence_extraction"
+
 
 # endpoint below to be used only for development purposes (don't need to run docker)
 # tika_server = "http://rsdo.lhrs.feri.um.si:9998/tika"
+
+#rabim conllu -> file
+# lematizirane besede ->lematized terms
+#file je touple z vsebino
+#torej ('temp_1.conllu', fp, 'application/octet-stream')
+def extract_definition_sentences(filePath="", lemmatized_terms=[]):
+
+    try:
+        fp = open(filePath, 'rb')
+        can = {'lemmatized_terms':[
+            w["kandidat"]
+            for w in lemmatized_terms["terminoloski_kandidati"]
+            ]
+        }
+        terms=json.dumps(can)
+        headers = {'accept': 'application/json'}
+        #,'Content-Type': 'multipart/form-data'}
+
+        res = requests.post(definicije_endpoint,headers=headers, files={'terms': (None, terms),'conllu_file': fp})
+        data = res.json()
+        print(data);
+        for i in lemmatized_terms["terminoloski_kandidati"]:
+            i["definicija"]=next((x["definicija"] for x in data["definition_candidates"] if x["term"] == i["kandidat"]), None)   
+        #apend to lematized terms
+        print(lemmatized_terms)
+    except Exception as e: print(e)
+    finally:
+        fp.close();
+
+        
+
+    return lemmatized_terms
+
 
 
 def extract_text_prepResp(file, content_type=""):
