@@ -50,11 +50,15 @@ class JobManager:
         # 4 = izlusci async glede na vhodne conlluje
         # 5 = izlusci po iskanju async
 
+        # 0 = Not settable here, but if a job has the type 0, then it was *deleted*
+
         :return: Job object, Did already exist boolean
         """
         try:
+            is_new = False  # caching disabled for now...
             if job_type in [2, 4, 5]:
-                job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
+                # job, is_new = Job.get_or_create(job_type=job_type, job_input=job_input, input_size=len(job_input))
+                job = Job.create(job_type=job_type, job_input=job_input, input_size=len(job_input))
             elif job_type in [1, 3, 12, 32]:
                 tmp_file = ""
                 while True:
@@ -65,8 +69,10 @@ class JobManager:
                 pathlib.Path('tmp').mkdir(exist_ok=True)
                 job_input: werkzeug.datastructures.FileStorage
                 job_input.save(tmp_file)
-                job, is_new = Job.get_or_create(job_type=job_type, input_file=tmp_file,
-                                                input_size=os.stat(tmp_file).st_size)
+                # job, is_new = Job.get_or_create(job_type=job_type, input_file=tmp_file,
+                #                                 input_size=os.stat(tmp_file).st_size)
+                job = Job.create(job_type=job_type, input_file=tmp_file,
+                                 input_size=os.stat(tmp_file).st_size)
             return job, is_new
 
         except Exception as e:

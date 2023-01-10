@@ -1,8 +1,13 @@
+import sys
+
 import classla
 import time
 from swagger_server import util
 from pathlib import Path
 import re
+import sys
+
+sys.setrecursionlimit(50000)
 
 nlp_loaded = False
 nlpSlo = classla.Pipeline('sl', processors='tokenize,ner,pos,lemma,depparse')
