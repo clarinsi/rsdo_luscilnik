@@ -23,6 +23,7 @@ ATEapi_endpoint = "http://ate-api:5000/predict"
 def do_izlusci(conllus, prepovedane_besede,definicije=False):
     tmp_file_path = ""
     print(definicije);
+    ret = {'terminoloski_kandidati':[]}
     try:
         big_conllu = cl_utils.multipla_conllus_to_one_from_conllus_arr(conllus)
         tmp_file_path = create_random_file_in_tmp_folder(big_conllu, ".conllu")
@@ -35,8 +36,9 @@ def do_izlusci(conllus, prepovedane_besede,definicije=False):
             res = requests.post(ATEapi_endpoint, files=files)
             data = json.loads(res.text)
         
-           
-            ret = {'terminoloski_kandidati': [
+            
+
+            ret['terminoloski_kandidati']=[
                 {
                     'POSoznake': tk['term_example_pos'],
                     'kandidat': tk['lemma'],  # more to bit lemma al terms?
@@ -49,7 +51,7 @@ def do_izlusci(conllus, prepovedane_besede,definicije=False):
                     'pogostostpojavljanja': [tk['frequency'], 0]  # ???????
                 }
                 for tk in data if tk['canonical'] not in prepovedane_besede
-            ]}
+            ]
 
           
 

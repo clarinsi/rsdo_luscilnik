@@ -657,7 +657,7 @@ components:
           type: string
         kanonicnaoblika:
           type: string
-        definition:
+        definicija:
           type: string
         POSoznake:
           type: string
@@ -685,6 +685,7 @@ components:
         kanonicnaoblika: kanonicnaoblika
         nosilnautez: 0.8008282
         kandidat: kandidat
+        definicija: "Kandidat je besedna zveza, ki bi lahko bila strokoven termin"
     JobResponse:
       required:
       - finished_job
