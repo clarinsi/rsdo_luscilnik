@@ -45,7 +45,7 @@ def get_extracted_words_async_post(leta=None, vrste=None, kljucne_besede=None, p
 
     :rtype: str
     """
-    return get_extracted_words_async(leta, vrste, kljucne_besede, prepovedane_besede, udk,,definicije)
+    return get_extracted_words_async(leta, vrste, kljucne_besede, prepovedane_besede, udk,definicije)
 
 
 def get_extracted_words_post(leta=None, vrste=None, kljucne_besede=None, prepovedane_besede=None,
