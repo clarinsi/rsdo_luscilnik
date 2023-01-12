@@ -311,7 +311,7 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: false
         style: form
@@ -339,6 +339,60 @@ paths:
                 format: int64
                 x-content-type: '*/*'
       x-openapi-router-controller: swagger_server.controllers.oss_controller
+    post:
+      tags:
+      - oss-post
+      summary: Vrne število besedil glede na iskalne pogoje
+      operationId: get_number_texts_post
+      parameters:
+      - name: leta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: vrste
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: udk
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
+                x-content-type: '*/*'
+      x-openapi-router-controller: swagger_server.controllers.oss_post_controller
   /oss/izlusciPoIskanju:
     get:
       tags:
@@ -366,7 +420,16 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
         in: query
         required: false
         style: form
@@ -427,7 +490,16 @@ paths:
           items:
             type: integer
             format: int64
-      - name: kljucnebesede
+      - name: kljucneBesede
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: prepovedaneBesede
         in: query
         required: false
         style: form
@@ -712,7 +784,7 @@ paths:
           type: array
           items:
             type: string
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: true
         style: form
@@ -816,7 +888,7 @@ paths:
           type: array
           items:
             type: string
-      - name: kljucnebesede
+      - name: kljucneBesede
         in: query
         required: true
         style: form
@@ -956,7 +1028,7 @@ components:
           type: array
           items:
             type: string
-        prepovedaneBesede:
+        prepovedanebesede:
           type: array
           items:
             type: string
@@ -969,7 +1041,7 @@ components:
           type: array
           items:
             type: string
-        prepovedaneBesede:
+        prepovedanebesede:
           type: array
           items:
             type: string
