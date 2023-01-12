@@ -6,6 +6,9 @@ __pycache__/
 #sublime config
 sftp-config.json
 
+#docker-compose
+docker-compose.yml
+
 # C extensions
 *.so
 
