@@ -10,6 +10,8 @@ sftp-config.json
 docker-compose.yml
 docker-compose-dev.yml
 
+#term-extraction models
+ATEapi/model/term_extractor/pytorch_model.bin
 # C extensions
 *.so
 
