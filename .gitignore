@@ -8,6 +8,7 @@ sftp-config.json
 
 #docker-compose
 docker-compose.yml
+docker-compose-dev.yml
 
 # C extensions
 *.so
